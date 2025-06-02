@@ -1,8 +1,9 @@
 ---
-import ProjectCard from '@/components/Cards/ProjectCard.astro';
-import Layout from '@/layouts/Layout.astro';
-import { getCollection } from 'astro:content';
-const allProjects = await getCollection('projects');
+import ProjectCard from "@/components/Cards/ProjectCard.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("projects");
 const sortedProjects = allProjects.sort(
   (a, b) => (a.data.featuredOrder || 999) - (b.data.featuredOrder || 999)
 );
@@ -30,22 +31,29 @@ const sortedProjects = allProjects.sort(
 </Layout>
 
 <style>
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-bottom: 6rem;
+  }
+
+  .projects-list__item {
+    margin-bottom: 0;
+  }
+
   @media screen and (min-width: 1024px) {
     .projects-list {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto;
-      grid-auto-columns: 1fr;
-      column-gap: 16px;
-      row-gap: 16px;
-      padding-bottom: 6rem;
+      grid-auto-rows: auto;
+      column-gap: 1rem;
+      row-gap: 1rem;
+      align-items: start;
     }
-    .projects-list__item {
-      margin-bottom: 0;
-    }
-    .projects-list__item:nth-child(2n) {
-      margin-top: 25%;
-      margin-bottom: -25%;
+
+    .projects-list__item:nth-child(even) {
+      margin-top: 2rem;
     }
   }
 </style>

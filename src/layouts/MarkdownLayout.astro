@@ -1,26 +1,137 @@
 ---
-import MarkdownContentContainer from '@/components/MarkdownContentContainer.astro';
-import FormattedDate from '@/components/FormattedDate.astro';
-import Tags from '@/components/Tags.astro';
-import readingTime from 'reading-time';
-import Layout from '@/layouts/Layout.astro';
+import MarkdownContentContainer from "@/components/MarkdownContentContainer.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Tags from "@/components/Tags.astro";
+import readingTime from "reading-time";
+import Layout from "@/layouts/Layout.astro";
+
 const { frontmatter, content } = Astro.props;
 const stats = readingTime(content);
+
+// Enhanced meta data for blog posts
+const customMeta = {
+  description:
+    frontmatter.description ||
+    frontmatter.excerpt ||
+    `${content.slice(0, 160)}...`,
+  keywords: frontmatter.tags?.join(", ") || "blog, article, technology",
+  ogImage: frontmatter.cover || "/blog-og-image.png",
+  canonicalUrl: Astro.url.href,
+};
+
+// Structured data for blog post
+const blogStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: frontmatter.title,
+  description: customMeta.description,
+  image: customMeta.ogImage,
+  author: {
+    "@type": "Person",
+    name: "Prashant Bhardwaj",
+  },
+  publisher: {
+    "@type": "Person",
+    name: "Prashant Bhardwaj",
+  },
+  datePublished: frontmatter.pubDate,
+  dateModified: frontmatter.updatedDate || frontmatter.pubDate,
+  wordCount: stats.words,
+  timeRequired: `PT${Math.ceil(stats.minutes)}M`,
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": Astro.url.href
+  },
+  keywords: frontmatter.tags?.join(", "),
+  articleSection: "Technology",
+  url: Astro.url.href,
+};
 ---
 
-<Layout isHome={false} content={content}>
-  <h1>{frontmatter.title}</h1>
-  <div class="post-info">
-    <div class="post-info__header">
-      <p>
-        Published on <FormattedDate date={frontmatter.pubDate} /><span>
-          - {stats.text}</span
-        >
-      </p>
+<Layout
+  isHome={false}
+  title={frontmatter.title}
+  customMeta={customMeta}
+>
+  <article itemscope itemtype="https://schema.org/BlogPosting">
+    <header class="post-header">
+      <h1 itemprop="headline">{frontmatter.title}</h1>
+      <div class="post-info">
+        <div class="post-info__header">
+          <p>
+            <span>Published on </span>
+            <time itemprop="datePublished" datetime={frontmatter.pubDate}>
+              <FormattedDate date={frontmatter.pubDate} />
+            </time>
+            <span
+              class="reading-time"
+              aria-label={`Estimated reading time: ${stats.text}`}
+            >
+              • {stats.text}
+            </span>
+            {
+              frontmatter.updatedDate && (
+                <span class="updated-date">
+                  • Updated{" "}
+                  <time
+                    itemprop="dateModified"
+                    datetime={frontmatter.updatedDate}
+                  >
+                    <FormattedDate date={frontmatter.updatedDate} />
+                  </time>
+                </span>
+              )
+            }
+          </p>
+        </div>
+        {frontmatter.tags && <Tags tags={frontmatter.tags} />}
+      </div>
+    </header>
+
+    <div itemprop="articleBody">
+      <MarkdownContentContainer>
+        <slot />
+      </MarkdownContentContainer>
     </div>
-    <Tags tags={frontmatter.tags} />
-  </div>
-  <MarkdownContentContainer>
-    <slot />
-  </MarkdownContentContainer>
+
+
+  </article>
+
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(blogStructuredData)}
+  />
 </Layout>
+
+<style>
+  .post-header {
+    margin-bottom: 2rem;
+  }
+
+  .post-info {
+    margin-top: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(var(--primary-text-value), 0.1);
+  }
+
+  .post-info__header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(var(--primary-text-value), 0.7);
+  }
+
+  .reading-time,
+  .updated-date {
+    font-style: italic;
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(var(--primary-text-value), 0.1);
+  }
+
+  time {
+    color: rgba(var(--primary-text-value), 0.8);
+  }
+</style>
