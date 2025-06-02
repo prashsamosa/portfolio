@@ -2,18 +2,34 @@
 import { getCollection } from "astro:content";
 import Link from "@/components/Link.astro";
 import PostsList from "@/components/PostsList.astro";
-const allPosts = await getCollection("posts");
-const sortedPosts = allPosts
-  .sort(
-    (a, b) =>
-      new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
-  )
-  .slice(0, 3);
+
+let sortedPosts = [];
+
+try {
+  const allPosts = await getCollection("posts");
+  if (allPosts && allPosts.length > 0) {
+    sortedPosts = allPosts
+      .filter((post) => post.data?.pubDate) // Only include posts with valid dates
+      .sort(
+        (a, b) =>
+          new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
+      )
+      .slice(0, 3);
+  }
+} catch (error) {
+  console.error('Error loading posts:', error);
+}
 ---
 
 <>
-  <PostsList posts={sortedPosts} />
-  <p>
-    <Link url="/posts" name="View more posts" />
-  </p>
+  {sortedPosts.length > 0 ? (
+    <>
+      <PostsList posts={sortedPosts} />
+      <p>
+        <Link url="/posts" name="View more posts" />
+      </p>
+    </>
+  ) : (
+    <p>No recent posts available at the moment.</p>
+  )}
 </>

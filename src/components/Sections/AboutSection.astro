@@ -1,14 +1,24 @@
 ---
-
 import { getEntry } from 'astro:content';
 import { Button } from '@/components/ui/button';
-const entry = await getEntry('aboutSnippets', 'about');
 
-const { Content } = await entry.render();
+let entry;
+let Content;
+
+try {
+  entry = await getEntry('aboutSnippets', 'about');
+  if (entry) {
+    const rendered = await entry.render();
+    Content = rendered.Content;
+  }
+} catch (error) {
+  console.error('Error loading about content:', error);
+}
 ---
+
 <>
   <div class="about-content">
-    <Content />
+    {Content ? <Content /> : <p>About content is currently unavailable.</p>}
   </div>
   <a
     href="/prashant_resume.pdf"

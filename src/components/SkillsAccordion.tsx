@@ -5,49 +5,84 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const LANGUAGES= [
-  "TypeScript", "Python", "Golang", "JavaScript", "Bash", "Elixir", "Lua", "SQL"
-];
+const SKILLS_DATA = {
+  languages: [
+    "TypeScript",
+    "Python",
+    "Golang",
+    "JavaScript",
+    "Bash",
+    "Elixir",
+  ],
+  frameworks: [
+    "Next",
+    "React",
+    "React Native",
+    "Router v7",
+    "Astro",
+    "Hono",
+    "Express",
+    "FastAPI",
+  ],
+  devTools: [
+    "Git",
+    "Docker",
+    "Cypress",
+    "Nginx",
+    "Neovim",
+    "RabbitMQ",
+  ],
+} as const;
 
-const FRAMEWORKS = ["Next", "React", "React Native", "Router v7", "Astro", "Hono",
-  "Express", "FastAPI", "Pydantic", "gRPC"
-  ];
+const ACCORDION_ITEMS = [
+  {
+    id: "languages",
+    title: "Languages",
+    skills: SKILLS_DATA.languages,
+  },
+  {
+    id: "frameworks",
+    title: "Frameworks and Libraries",
+    skills: SKILLS_DATA.frameworks,
+  },
+  {
+    id: "devTools",
+    title: "Developer Tools",
+    skills: SKILLS_DATA.devTools,
+  },
+] as const;
 
-const DEV_TOOLS = [
-  "Git", "Docker", "Kubernetes", "Cypress", "Nginx", "Neovim", "RabbitMQ"
-];
+function SkillsList({ items }: { items: readonly string[] }) {
+  if (!items || items.length === 0) {
+    return <p className="tw:text-gray-500 tw:italic">No skills available</p>;
+  }
 
-
-
-
-function List(items: readonly string[]) {
-  const list = items.map((item) => (
-    <li key={item} className="tw:mb-4">
-      {item}
-    </li>
-  ));
-  return <ul className="tw:list-disc tw:grid tw:grid-cols-2">{list}</ul>;
-}
-
-export default function SkillsAccordion() {
-  const languages = List(LANGUAGES);
-  const frameworks = List(FRAMEWORKS);
-  const devTools = List(DEV_TOOLS);
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Languages</AccordionTrigger>
-        <AccordionContent>{languages}</AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Frameworks and Libraries</AccordionTrigger>
-        <AccordionContent>{frameworks}</AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Developer Tools</AccordionTrigger>
-        <AccordionContent>{devTools}</AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <ul className="tw:list-disc tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-2 tw:pl-5">
+      {items.map((item) => (
+        <li key={item} className="tw:mb-2 tw:text-sm">
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }
 
+export default function SkillsAccordion() {
+  return (
+    <div className="tw:w-full">
+      <Accordion type="single" collapsible className="tw:w-full">
+        {ACCORDION_ITEMS.map((section, index) => (
+          <AccordionItem key={section.id} value={`item-${index + 1}`}>
+            <AccordionTrigger className="tw:text-left">
+              {section.title}
+            </AccordionTrigger>
+            <AccordionContent>
+              <SkillsList items={section.skills} />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  );
+}

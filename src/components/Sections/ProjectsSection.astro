@@ -2,29 +2,52 @@
 import ProjectCard from "@/components/Cards/ProjectCard.astro";
 import Link from "@/components/Link.astro";
 import { getCollection } from "astro:content";
-const allProjects = await getCollection("projects");
-const filteredProjects = allProjects
-  .filter((project) => project.data.featured)
-  .sort((a, b) => a.data.featuredOrder - b.data.featuredOrder);
+
+let filteredProjects = [];
+
+try {
+  const allProjects = await getCollection("projects");
+  if (allProjects && allProjects.length > 0) {
+    filteredProjects = allProjects
+      .filter((project) => project.data?.featured)
+      .sort(
+        (a, b) => (a.data?.featuredOrder || 0) - (b.data?.featuredOrder || 0)
+      );
+  }
+} catch (error) {
+  console.error("Error loading projects:", error);
+}
 ---
 
 <>
   {
-    filteredProjects.map((project) => (
-      <ProjectCard
-        class="projects-list__item"
-        title={project.data.title}
-        description={project.data.description}
-        imagesrc={project.data.cover?.src ? project.data.cover : undefined}
-        imageAlt={project.data.coverAlt}
-        github={project.data.github}
-        liveLink={project.data.liveLink}
-        postLink={project.data.postLink}
-        tags={project.data.tags}
-      />
-    ))
+    filteredProjects.length > 0 ? (
+      <>
+        {filteredProjects.map((project) => (
+          <ProjectCard
+            class="projects-list__item"
+            title={project.data?.title || "Untitled Project"}
+            description={
+              project.data?.description || "No description available"
+            }
+            imagesrc={project.data?.cover?.src ? project.data.cover : undefined}
+            imageAlt={
+              project.data?.coverAlt || project.data?.title || "Project image"
+            }
+            github={project.data?.github}
+            liveLink={project.data?.liveLink}
+            postLink={project.data?.postLink}
+            tags={project.data?.tags || []}
+            href={`/projects/${project.slug}`}
+            featured={true}
+          />
+        ))}
+        <p>
+          <Link url="/projects" name="View more projects" />
+        </p>
+      </>
+    ) : (
+      <p>No featured projects available at the moment.</p>
+    )
   }
-  <p>
-    <Link url="/projects" name="View more projects" />
-  </p>
 </>

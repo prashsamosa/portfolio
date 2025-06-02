@@ -1,18 +1,33 @@
 ---
-import EducationCard from '@/components/Cards/ResumeCard.astro';
-import { getCollection } from 'astro:content';
-const aboutSnippets = await getCollection('aboutSnippets');
-const educations = aboutSnippets
-  .filter((entry) => entry.id.includes('education'))
-  .sort((a, b) => a.data.order - b.data.order);
+import EducationCard from "@/components/Cards/ResumeCard.astro";
+import { getCollection } from "astro:content";
+
+let educations = [];
+
+try {
+  const aboutSnippets = await getCollection("aboutSnippets");
+  if (aboutSnippets && aboutSnippets.length > 0) {
+    educations = aboutSnippets
+      .filter((entry) => entry.id.includes("education"))
+      .sort((a, b) => (a.data?.order || 0) - (b.data?.order || 0));
+  }
+} catch (error) {
+  console.error("Error loading education data:", error);
+}
 ---
 
 <>
-  {educations.map(({ data: education }) => (
-    <EducationCard
-      timespan={education.timeline}
-      title={education.title}
-      organization={education.organization}
-    />
-  ))}
+  {
+    educations.length > 0 ? (
+      educations.map(({ data: education }) => (
+        <EducationCard
+          timespan={education?.timeline || "Timeline not available"}
+          title={education?.title || "Title not available"}
+          organization={education?.organization || "Organization not available"}
+        />
+      ))
+    ) : (
+      <p>Education information is currently unavailable.</p>
+    )
+  }
 </>
