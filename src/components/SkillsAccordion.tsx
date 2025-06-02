@@ -12,27 +12,24 @@ const SKILLS_DATA = {
     "Python",
     "Golang",
     "JavaScript",
-    "Bash",
     "Elixir",
     "Lua",
-    "SQL",
   ],
   frameworks: [
     "Next",
     "React",
-    "React Native",
+    "React Native (Expo)",
+    "Tailwind CSS",
     "Router v7",
     "Astro",
     "Hono",
     "Express",
     "FastAPI",
-    "Pydantic",
-    "gRPC",
+
   ],
   devTools: [
     "Git",
     "Docker",
-    "Kubernetes",
     "Cypress",
     "Nginx",
     "Neovim",
@@ -64,9 +61,9 @@ function SkillsList({ items }: { items: readonly string[] }) {
   }
 
   return (
-    <ul className="tw:list-disc tw:grid tw:grid-cols-1 sm:tw:grid-cols-2 tw:gap-2 tw:pl-5">
+    <ul className="tw:list-disc tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 md:tw:grid-cols-4 lg:tw:grid-cols-6 tw:gap-x-4 tw:gap-y-2 tw:pl-5">
       {items.map((item) => (
-        <li key={item} className="tw:mb-2 tw:text-sm">
+        <li key={item} className="tw:text-sm tw:leading-relaxed">
           {item}
         </li>
       ))}
