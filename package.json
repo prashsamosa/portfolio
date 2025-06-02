@@ -50,6 +50,7 @@
     "@types/babel__template": "^7.4.4",
     "@types/babel__traverse": "^7.20.7",
     "@types/lodash.debounce": "^4.0.9",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "rolldown": "^1.0.0-beta.10"
   }
 }
