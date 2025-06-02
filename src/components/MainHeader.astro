@@ -153,14 +153,14 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     font-size: 0.95rem;
   }
 
-  /* Navigation Section */
+  /* Navigation Section - REMOVED BORDER */
   .header__navigation {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     margin-top: 2.5rem;
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* border-top: 1px solid rgba(255, 255, 255, 0.1); */ /* REMOVED */
   }
 
   .header__nav-wrapper,
@@ -173,11 +173,11 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     position: relative;
   }
 
-  /* TOC Section */
+  /* TOC Section - REMOVED BORDER */
   .header__toc-wrapper {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* border-top: 1px solid rgba(255, 255, 255, 0.1); */ /* REMOVED */
   }
 
   /* Focus styles for accessibility */
@@ -383,7 +383,7 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     }
   }
 
-  /* High contrast mode support */
+  /* High contrast mode support - REMOVED BORDER COLORS */
   @media (prefers-contrast: high) {
     .header__title {
       background: none;
@@ -396,12 +396,13 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
       color: rgba(var(--primary-text-rgb, 255, 255, 255), 0.9);
     }
 
-    .header__navigation {
+    /* REMOVED BORDER-TOP-COLOR DECLARATIONS */
+    /* .header__navigation {
       border-top-color: rgba(255, 255, 255, 0.3);
     }
 
     .header__toc-wrapper {
       border-top-color: rgba(255, 255, 255, 0.3);
-    }
+    } */
   }
 </style>
