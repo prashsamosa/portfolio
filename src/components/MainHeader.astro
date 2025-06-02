@@ -15,9 +15,13 @@ interface Props {
 
 const { isHome, title, subtitle, details, navItems, content } = Astro.props;
 const hasHeaderTexts = Boolean(title || subtitle || details);
+const hasValidContent = Boolean(content && content.trim().length > 0);
 ---
 
-<header class={`header ${isHome ? "header--home" : "header--page"}`}>
+<header
+  class={`header ${isHome ? "header--home" : "header--page"}`}
+  role="banner"
+>
   {
     hasHeaderTexts && (
       <div class="header__content">
@@ -38,7 +42,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
 
   <div class="header__navigation">
     {
-      isHome && navItems?.length > 0 && (
+      isHome && navItems?.length && navItems.length > 0 && (
         <div class="header__nav-wrapper">
           <Navigation navItems={navItems} />
         </div>
@@ -54,7 +58,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
   </div>
 
   {
-    content && (
+    hasValidContent && (
       <div class="header__toc-wrapper">
         <TOC content={content} />
       </div>
@@ -63,6 +67,12 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
 </header>
 
 <style>
+  /* CSS Custom Properties - Define these in your global styles if not already defined */
+  :root {
+    --primary-text-rgb: 255, 255, 255;
+    --header-z-index: 100;
+  }
+
   .header {
     display: flex;
     flex-direction: column;
@@ -71,6 +81,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     background: transparent;
     position: relative;
     overflow: hidden;
+    z-index: var(--header-z-index);
   }
 
   .header--home {
@@ -100,15 +111,25 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     font-weight: 700;
     line-height: 1.1;
     margin: 0;
+    color: #ffffff; /* Fallback for browsers that don't support gradient text */
     background: linear-gradient(
       135deg,
       #ffffff 0%,
       rgba(255, 255, 255, 0.8) 100%
     );
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     letter-spacing: -0.02em;
+  }
+
+  /* Fallback for browsers that don't support background-clip: text */
+  @supports not (background-clip: text) or not (-webkit-background-clip: text) {
+    .header__title {
+      color: #ffffff;
+      background: none;
+      -webkit-text-fill-color: inherit;
+    }
   }
 
   .header__subtitle {
@@ -116,7 +137,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     font-weight: 500;
     line-height: 1.4;
     margin: 0;
-    color: rgba(var(--primary-text-value), 0.75);
+    color: rgba(var(--primary-text-rgb, 255, 255, 255), 0.75);
     letter-spacing: -0.01em;
   }
 
@@ -128,7 +149,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
   .header__details {
     margin: 0;
     line-height: 1.6;
-    color: rgba(var(--primary-text-value), 0.7);
+    color: rgba(var(--primary-text-rgb, 255, 255, 255), 0.7);
     font-size: 0.95rem;
   }
 
@@ -159,20 +180,33 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Focus styles for accessibility */
+  .header *:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .header *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   /* Desktop Styles */
   @media only screen and (min-width: 1024px) {
     .header {
       position: sticky;
       top: 2rem;
-      height: calc(100vh - 4rem);
+      max-height: calc(100vh - 4rem);
+      min-height: auto;
       padding: 2.5rem;
       overflow-y: auto;
       margin: 2rem 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
     }
 
     .header--home {
       width: 42%;
-      min-height: calc(100vh - 4rem);
     }
 
     .header--page {
@@ -201,7 +235,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
       padding: 1rem 0;
     }
 
-    /* Custom scrollbar */
+    /* Custom scrollbar for Webkit browsers */
     .header::-webkit-scrollbar {
       width: 4px;
     }
@@ -214,6 +248,7 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     .header::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 2px;
+      transition: background-color 0.2s ease;
     }
 
     .header::-webkit-scrollbar-thumb:hover {
@@ -240,24 +275,22 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
-  /* Mobile Styles - Updated with top spacing */
+  /* Mobile Styles */
   @media only screen and (max-width: 768px) {
     .header {
       padding: 1.25rem;
-      padding-top: 2rem; /* Added extra top padding for mobile */
       max-width: 100%;
       margin: 0.5rem;
-    }
-
-    .header__content {
-      gap: 1.5rem;
-      margin-top: 1rem; /* Push content down a bit more */
     }
 
     .header__navigation {
       margin-top: 2rem;
       padding-top: 1.5rem;
       gap: 1.75rem;
+    }
+
+    .header__content {
+      gap: 1.5rem;
     }
 
     .header__details-wrapper {
@@ -269,23 +302,21 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
-  /* Small Mobile Styles - Updated with top spacing */
+  /* Small Mobile Styles */
   @media only screen and (max-width: 480px) {
     .header {
       padding: 1rem;
-      padding-top: 1.5rem; /* Added extra top padding for small mobile */
       margin: 0.25rem;
-    }
-
-    .header__content {
-      gap: 1.25rem;
-      margin-top: 0.75rem; /* Push content down */
     }
 
     .header__navigation {
       margin-top: 1.75rem;
       padding-top: 1.25rem;
       gap: 1.5rem;
+    }
+
+    .header__content {
+      gap: 1.25rem;
     }
 
     .header__intro {
@@ -330,6 +361,15 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     .header__navigation {
       animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.4s both;
     }
+
+    .header__toc-wrapper {
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) 0.5s both;
+    }
+
+    /* Smooth transitions for interactive elements */
+    .header *:focus {
+      transition: outline-color 0.2s ease;
+    }
   }
 
   @keyframes fadeInUp {
@@ -343,4 +383,25 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .header__title {
+      background: none;
+      -webkit-text-fill-color: inherit;
+      color: #ffffff;
+    }
+
+    .header__subtitle,
+    .header__details {
+      color: rgba(var(--primary-text-rgb, 255, 255, 255), 0.9);
+    }
+
+    .header__navigation {
+      border-top-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .header__toc-wrapper {
+      border-top-color: rgba(255, 255, 255, 0.3);
+    }
+  }
 </style>
