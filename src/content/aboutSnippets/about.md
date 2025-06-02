@@ -1,2 +1,2 @@
-![Image](/i-am-programmer.svg "hey nerd")
+![Image](/i-am-programmer.svg)
 
