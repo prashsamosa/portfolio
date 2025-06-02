@@ -1,7 +1,6 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import { rolldown } from "@rolldown/vite-plugin";
 
 // Define React Compiler configuration
 const ReactCompilerConfig = {
@@ -24,6 +23,6 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss(), rolldown()],
+    plugins: [tailwindcss()],
   },
 });
