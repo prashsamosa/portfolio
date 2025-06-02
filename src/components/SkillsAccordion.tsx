@@ -13,6 +13,8 @@ const SKILLS_DATA = {
     "JavaScript",
     "Bash",
     "Elixir",
+    "Lua",
+    "SQL",
   ],
   frameworks: [
     "Next",
@@ -23,10 +25,13 @@ const SKILLS_DATA = {
     "Hono",
     "Express",
     "FastAPI",
+    "Pydantic",
+    "gRPC",
   ],
   devTools: [
     "Git",
     "Docker",
+    "Kubernetes",
     "Cypress",
     "Nginx",
     "Neovim",
