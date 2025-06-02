@@ -8,6 +8,323 @@ import SkillsSection from "@/components/Sections/SkillsSection.astro";
 import ProjectsSection from "@/components/Sections/ProjectsSection.astro";
 import PostsSection from "@/components/Sections/PostsSection.astro";
 
+// Section configuration with metadata
+const SECTION_CONFIG = {
+  about: {
+    component: AboutSection,
+    title: "About",
+    order: 1,
+  },
+  stack: {
+    component: SkillsSection,
+    title: "Skills",
+    order: 2,
+  },
+  projects: {
+    component: ProjectsSection,
+    title: "Projects",
+    order: 3,
+  },
+  education: {
+    component: EducationSection,
+    title: "Education",
+    order: 4,
+  },
+  experience: {
+    component: ExperienceSection,
+    title: "Experience",
+    order: 5,
+  },
+  posts: {
+    component: PostsSection,
+    title: "Posts",
+    order: 6,
+  },
+} as const;
+
+// Personal information configuration
+const PERSONAL_INFO = {
+  name: "Prashant Bhardwaj",
+  title: "dev", // Consider adding a proper title
+  description: "I read books and write code.", // Consider adding a description
+} as const;
+
+// Get sections sorted by order
+const sections = Object.entries(SECTION_CONFIG).sort(
+  ([, a], [, b]) => a.order - b.order
+);
+
+// Extract navigation items (all sections in this case)
+const navItems = sections.map(([key]) => key);
+
+// Helper function to capitalize section names
+const capitalize = (str: string): string =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+---
+
+<Layout
+  isHome={true}
+  title={PERSONAL_INFO.name}
+  subtitle={PERSONAL_INFO.title}
+  details={PERSONAL_INFO.description}
+  navItems={navItems}
+>
+  {
+    sections.map(([sectionKey, sectionConfig]) => {
+      const SectionComponent = sectionConfig.component;
+      const sectionId = slugify(sectionKey, { lower: true });
+
+      return (
+        <section
+          id={sectionId}
+          class="portfolio-section"
+          data-section={sectionKey}
+        >
+          <h1 class="section-title">{sectionConfig.title}</h1>
+          <div class="section-content">
+            <SectionComponent />
+          </div>
+        </section>
+      );
+    })
+  }
+</Layout>
+
+<style>
+  /* Section Base Styles */
+  .portfolio-section {
+    padding-bottom: 6rem;
+    transition: opacity 500ms ease-in-out;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2.5rem;
+    color: var(--color-foreground, currentColor);
+  }
+
+  .section-content {
+    position: relative;
+  }
+
+  /* Typography Hierarchy */
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 1024px) {
+    .portfolio-section {
+      scroll-margin-top: 6rem;
+      padding-top: 0;
+      opacity: 0.5;
+    }
+
+    .portfolio-section:focus-within,
+    .portfolio-section.section-focus {
+      opacity: 1;
+    }
+
+    .portfolio-section:last-of-type {
+      padding-bottom: 0;
+    }
+
+    /* Enhanced focus states for accessibility */
+    .portfolio-section:focus-visible {
+      outline: 2px solid var(--color-ring, #3b82f6);
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+  }
+
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .portfolio-section {
+      transition: none;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .portfolio-section {
+      break-inside: avoid;
+      opacity: 1 !important;
+      padding-bottom: 2rem;
+    }
+  }
+</style>
+
+<script>
+  // Type definitions for better code completion
+  interface LayoutManager {
+    init(): void;
+    handleResize(): void;
+    alignLastSection(): void;
+    observeVisibility(): void;
+  }
+
+  class PortfolioLayoutManager implements LayoutManager {
+    private resizeObserver?: ResizeObserver;
+    private intersectionObserver?: IntersectionObserver;
+    private readonly DESKTOP_BREAKPOINT = 1024;
+    private readonly DEBOUNCE_DELAY = 300;
+
+    init(): void {
+      this.alignLastSection();
+      this.observeVisibility();
+      this.setupEventListeners();
+    }
+
+    private setupEventListeners(): void {
+      if ("ResizeObserver" in window) {
+        this.resizeObserver = new ResizeObserver(
+          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY)
+        );
+        this.resizeObserver.observe(document.body);
+      } else {
+        window.addEventListener(
+          "resize",
+          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY)
+        );
+      }
+    }
+
+    handleResize(): void {
+      this.alignLastSection();
+    }
+
+    alignLastSection(): void {
+      const lastSection = document.querySelector(
+        ".portfolio-section:last-of-type"
+      ) as HTMLElement;
+      const header = document.querySelector("header") as HTMLElement;
+      const footer = document.querySelector("footer") as HTMLElement;
+
+      if (!lastSection || !header) return;
+
+      // Reset styles for mobile
+      if (window.innerWidth < this.DESKTOP_BREAKPOINT) {
+        lastSection.style.paddingBottom = "";
+        if (footer) {
+          footer.style.position = "";
+          footer.style.marginTop = "";
+        }
+        return;
+      }
+
+      try {
+        const headerStyle = getComputedStyle(header);
+        const headerPadding =
+          parseInt(headerStyle.paddingTop) +
+          parseInt(headerStyle.paddingBottom);
+
+        const lastSectionStyle = getComputedStyle(lastSection);
+        const lastSectionHeight =
+          parseInt(lastSectionStyle.height) -
+          parseInt(lastSectionStyle.paddingBottom);
+
+        const requiredPadding = Math.max(
+          0,
+          window.innerHeight - headerPadding - lastSectionHeight
+        );
+
+        lastSection.style.paddingBottom = `${requiredPadding}px`;
+
+        // Handle footer positioning
+        if (footer) {
+          const footerHeight = parseInt(getComputedStyle(footer).height);
+          const shouldFloatFooter = requiredPadding >= footerHeight;
+
+          footer.style.position = shouldFloatFooter ? "absolute" : "relative";
+          footer.style.marginTop = shouldFloatFooter ? "0" : "6rem";
+        }
+      } catch (error) {
+        console.warn("Error aligning last section:", error);
+      }
+    }
+
+    observeVisibility(): void {
+      if (!("IntersectionObserver" in window)) return;
+
+      const sections = document.querySelectorAll(".portfolio-section");
+
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const section = entry.target as HTMLElement;
+
+            if (entry.isIntersecting) {
+              section.classList.add("section-focus");
+
+              // Update URL hash without triggering scroll
+              const sectionId = section.id;
+              if (sectionId && window.location.hash !== `#${sectionId}`) {
+                history.replaceState(null, "", `#${sectionId}`);
+              }
+            } else {
+              section.classList.remove("section-focus");
+            }
+          });
+        },
+        {
+          threshold: 0.3,
+          rootMargin: "-10% 0px -10% 0px",
+        }
+      );
+
+      sections.forEach((section) => {
+        this.intersectionObserver?.observe(section);
+      });
+    }
+
+    private debounce<T extends (...args: any[]) => any>(
+      func: T,
+      wait: number
+    ): (...args: Parameters<T>) => void {
+      let timeout: ReturnType<typeof setTimeout>;
+
+      return (...args: Parameters<T>) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+
+    // Cleanup method for when component unmounts
+    destroy(): void {
+      this.resizeObserver?.disconnect();
+      this.intersectionObserver?.disconnect();
+    }
+  }
+
+  // Initialize the layout manager
+  const layoutManager = new PortfolioLayoutManager();
+
+  // Initialize when DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => layoutManager.init());
+  } else {
+    layoutManager.init();
+  }
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => layoutManager.destroy());
+</script>
+
+<!-- ---
+import slugify from "slugify";
+import Layout from "@/layouts/Layout.astro";
+import AboutSection from "@/components/Sections/AboutSection.astro";
+import ExperienceSection from "@/components/Sections/ExperienceSection.astro";
+import EducationSection from "@/components/Sections/EducationSection.astro";
+import SkillsSection from "@/components/Sections/SkillsSection.astro";
+import ProjectsSection from "@/components/Sections/ProjectsSection.astro";
+import PostsSection from "@/components/Sections/PostsSection.astro";
+
 const sectionComponents = {
   about: AboutSection,
   stack: SkillsSection,
@@ -150,4 +467,4 @@ const navItems = Object.keys(sectionComponents);
 
   document.addEventListener("DOMContentLoaded", alignLastSectionToHeader);
   window.addEventListener("resize", debounce(alignLastSectionToHeader, 500, { trailing: true }));
-</script>
+</script> -->
