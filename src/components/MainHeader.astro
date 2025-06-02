@@ -93,11 +93,12 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     justify-content: flex-start;
   }
 
-  /* Content Section */
+  /* Content Section - MOVED DOWN */
   .header__content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    margin-top: 2rem; /* ADDED: Push content down from top */
   }
 
   .header__intro {
@@ -215,6 +216,7 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
 
     .header__content {
       gap: 2rem;
+      margin-top: 2.5rem; /* UPDATED: More space on desktop */
     }
 
     .header__intro {
@@ -264,14 +266,15 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
       margin: 1rem;
     }
 
+    .header__content {
+      gap: 1.75rem;
+      margin-top: 1.75rem; /* UPDATED: Adjusted for tablet */
+    }
+
     .header__navigation {
       margin-top: 2.5rem;
       padding-top: 2rem;
       gap: 2rem;
-    }
-
-    .header__content {
-      gap: 1.75rem;
     }
   }
 
@@ -283,14 +286,15 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
       margin: 0.5rem;
     }
 
+    .header__content {
+      gap: 1.5rem;
+      margin-top: 1.5rem; /* UPDATED: Adjusted for mobile */
+    }
+
     .header__navigation {
       margin-top: 2rem;
       padding-top: 1.5rem;
       gap: 1.75rem;
-    }
-
-    .header__content {
-      gap: 1.5rem;
     }
 
     .header__details-wrapper {
@@ -309,14 +313,15 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
       margin: 0.25rem;
     }
 
+    .header__content {
+      gap: 1.25rem;
+      margin-top: 1rem; /* UPDATED: Adjusted for small mobile */
+    }
+
     .header__navigation {
       margin-top: 1.75rem;
       padding-top: 1.25rem;
       gap: 1.5rem;
-    }
-
-    .header__content {
-      gap: 1.25rem;
     }
 
     .header__intro {
