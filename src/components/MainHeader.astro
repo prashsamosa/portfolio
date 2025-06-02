@@ -240,22 +240,24 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
-  /* Mobile Styles */
+  /* Mobile Styles - Updated with top spacing */
   @media only screen and (max-width: 768px) {
     .header {
       padding: 1.25rem;
+      padding-top: 2rem; /* Added extra top padding for mobile */
       max-width: 100%;
       margin: 0.5rem;
+    }
+
+    .header__content {
+      gap: 1.5rem;
+      margin-top: 1rem; /* Push content down a bit more */
     }
 
     .header__navigation {
       margin-top: 2rem;
       padding-top: 1.5rem;
       gap: 1.75rem;
-    }
-
-    .header__content {
-      gap: 1.5rem;
     }
 
     .header__details-wrapper {
@@ -267,21 +269,23 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
-  /* Small Mobile Styles */
+  /* Small Mobile Styles - Updated with top spacing */
   @media only screen and (max-width: 480px) {
     .header {
       padding: 1rem;
+      padding-top: 1.5rem; /* Added extra top padding for small mobile */
       margin: 0.25rem;
+    }
+
+    .header__content {
+      gap: 1.25rem;
+      margin-top: 0.75rem; /* Push content down */
     }
 
     .header__navigation {
       margin-top: 1.75rem;
       padding-top: 1.25rem;
       gap: 1.5rem;
-    }
-
-    .header__content {
-      gap: 1.25rem;
     }
 
     .header__intro {
@@ -339,5 +343,4 @@ const hasHeaderTexts = Boolean(title || subtitle || details);
     }
   }
 
-  /* Remove hover effects and focus states since we removed boxes */
 </style>
