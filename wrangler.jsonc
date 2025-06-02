@@ -1,8 +1,10 @@
 {
   "name": "portfolio",
-  // Update to today's date
   "compatibility_date": "2025-06-03",
   "assets": {
     "directory": "./dist"
   }
 }
+
+
+
