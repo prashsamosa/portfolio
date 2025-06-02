@@ -1,18 +1,18 @@
 ---
-import { getEntry } from 'astro:content';
-import { Button } from '@/components/ui/button';
+import { getEntry } from "astro:content";
+import { Button } from "@/components/ui/button";
 
 let entry;
 let Content;
 
 try {
-  entry = await getEntry('aboutSnippets', 'about');
+  entry = await getEntry("aboutSnippets", "about");
   if (entry) {
     const rendered = await entry.render();
     Content = rendered.Content;
   }
 } catch (error) {
-  console.error('Error loading about content:', error);
+  console.error("Error loading about content:", error);
 }
 ---
 
@@ -35,7 +35,21 @@ try {
   a {
     all: unset;
   }
+
   .about-content {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Mobile responsive spacing */
+  @media only screen and (max-width: 768px) {
+    .about-content {
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  @media only screen and (max-width: 480px) {
+    .about-content {
+      margin-bottom: 2rem;
+    }
   }
 </style>
