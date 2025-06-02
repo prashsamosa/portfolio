@@ -1,80 +1,84 @@
+/* Tailwind CSS v4 Configuration */
 @import 'tailwindcss' prefix(tw);
 
+/* Custom Variants */
 @custom-variant dark (&:is(.dark *));
 
+/* Theme Configuration */
 @theme {
+  /* Color Tokens */
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
+  /* Primary Colors */
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
 
+  /* Secondary Colors */
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
 
+  /* Destructive Colors */
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
 
+  /* Muted Colors */
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
 
+  /* Accent Colors */
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
 
+  /* Popover Colors */
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
 
+  /* Card Colors */
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
+  /* Border Radius */
   --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
 
+  /* Animations */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
+  /* Keyframes */
   @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
   }
+
   @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
   }
 }
 
+/* Custom Utilities */
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;
-  @media (width >= --theme(--breakpoint-sm)) {
+
+  @media (width >= theme(--breakpoint-sm)) {
     max-width: none;
   }
+
   @media (width >= 1400px) {
     max-width: 1400px;
   }
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+/* Base Layer - Border Compatibility */
 @layer base {
+  /* Tailwind v4 border compatibility */
   *,
   ::after,
   ::before,
@@ -84,70 +88,57 @@
   }
 }
 
+/* CSS Custom Properties - Design Tokens */
 @layer base {
   :root {
+    /* Light Mode Colors */
     --background: 191 8% 43%;
     --foreground: 58 39% 85%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
     --primary: 58 39% 85%;
     --primary-foreground: 58 39% 85%;
-
     --secondary: 58 39% 85%;
     --secondary-foreground: 191 8% 43%;
-
     --muted: 58 39% 85%;
     --muted-foreground: 58 39% 85%;
-
     --accent: 58 39% 85%;
     --accent-foreground: 191 8% 43%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 58 39% 85%;
     --input: 58 39% 85%;
     --ring: 58 39% 85%;
-
     --radius: 0.5rem;
   }
 
+  /* Dark Mode Colors */
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
   }
 }
 
+/* Global Base Styles */
 @layer base {
   * {
     @apply tw:border-border;
@@ -157,4 +148,3 @@
     @apply tw:bg-background tw:text-foreground;
   }
 }
-
