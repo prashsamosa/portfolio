@@ -3,10 +3,9 @@ const path = Astro.url.pathname;
 const crumbs = path.split("/").filter((crumb) => crumb);
 crumbs.unshift("/");
 
-const links = {};
+const links: Record<string, string> = {};
 let tmpLink = "";
 
-// NOTE: JS guarantees insertion order for string keys.
 crumbs.forEach((crumb, index) => {
   tmpLink = tmpLink.concat(index > 1 ? "/" : "", crumb);
   const linkName =
@@ -15,41 +14,60 @@ crumbs.forEach((crumb, index) => {
 });
 ---
 
-<p>
-  {
-    Object.keys(links).map((name, index, array) => {
-      const divider = () =>
-        index === crumbs.length - 1 ? null : <span>/</span>;
-      return [
-        <a
-          href={links[name]}
-          class={`breadcrumbs__link ${
-            index === array.length - 1 ? "breadcrumbs__link--current" : ""
-          }`}
-        >
-          {name}
-        </a>,
-        divider()
-      ];
-    })
-  }
-</p>
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumbs">
+    {
+      Object.entries(links).map(([name, url], index, array) => (
+        <li class="breadcrumbs__item">
+          <a
+            href={url}
+            class={`breadcrumbs__link ${
+              index === array.length - 1 ? "breadcrumbs__link--current" : ""
+            }`}
+            aria-current={index === array.length - 1 ? "page" : undefined}
+          >
+            {name}
+          </a>
+          {index < array.length - 1 && (
+            <span class="breadcrumbs__separator">/</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
 
 <style>
-  p {
+  .breadcrumbs {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .breadcrumbs__link {
     color: rgba(var(--primary-text-value), 0.4);
-    transition-duration: 500ms;
+    transition: color 0.3s ease;
+    text-decoration: none;
   }
+
   .breadcrumbs__link--current {
     color: rgba(var(--primary-text-value), 1);
   }
-  .breadcrumbs__link:hover {
-    color: rgba(var(--primary-text-value), 1);
+
+  .breadcrumbs__link:hover:not(.breadcrumbs__link--current) {
+    color: rgba(var(--primary-text-value), 0.7);
+  }
+
+  .breadcrumbs__separator {
+    color: rgba(var(--primary-text-value), 0.3);
   }
 </style>

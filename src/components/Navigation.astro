@@ -6,45 +6,88 @@ interface Props {
 const { navItems } = Astro.props;
 ---
 
-<div class="nav">
-  <ul>
+<nav class="nav" aria-label="Page sections">
+  <ul class="nav__list">
     {
-      navItems.map((item) => {
-        return (
-          <li>
-            <a href={`#${item}`} class="nav__item" id={`${item}Nav`}>
-              {item}
-            </a>
-          </li>
-        );
-      })
+      navItems.map((item) => (
+        <li class="nav__item">
+          <a
+            href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+            class="nav__link"
+            data-section={item.toLowerCase().replace(/\s+/g, "-")}
+          >
+            {item}
+          </a>
+        </li>
+      ))
     }
   </ul>
-</div>
+</nav>
+
+<script>
+  // Add active state management
+  const navLinks = document.querySelectorAll(".nav__link");
+  const sections = document.querySelectorAll("[id]");
+
+  const observerOptions = {
+    root: null,
+    rootMargin: "-20% 0px -80% 0px",
+    threshold: 0,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        navLinks.forEach((link) => link.classList.remove("nav__link--active"));
+        const activeLink = document.querySelector(
+          `[data-section="${entry.target.id}"]`
+        );
+        activeLink?.classList.add("nav__link--active");
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach((section) => observer.observe(section));
+</script>
+
 <style>
   .nav {
     display: none;
   }
 
-  .nav ul {
-    list-style-type: none;
+  .nav__list {
+    list-style: none;
     padding: 0;
-  }
-
-  .nav li {
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.1rem;
+    margin: 0;
   }
 
   .nav__item {
-    color: var(--primary-text);
-    opacity: 0.4;
-    transition-duration: 500ms;
+    margin-bottom: 0.5rem;
   }
 
-  .nav__item:not(.toggled):hover {
+  .nav__link {
+    display: block;
+    color: var(--primary-text);
+    opacity: 0.4;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+    padding: 0.25rem 0;
+    transition: all 0.3s ease;
+    border-left: 2px solid transparent;
+    padding-left: 0.5rem;
+  }
+
+  .nav__link:hover,
+  .nav__link:focus {
     opacity: 0.7;
+    outline: none;
+  }
+
+  .nav__link--active {
+    opacity: 1;
+    border-left-color: var(--accent-color, #0066cc);
   }
 
   @media only screen and (min-width: 1024px) {

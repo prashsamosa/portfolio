@@ -4,33 +4,93 @@ import FormattedDate from "@/components/FormattedDate.astro";
 
 interface Props {
   posts: CollectionEntry<"posts">[];
+  showExcerpt?: boolean;
 }
 
-const { posts } = Astro.props;
+const { posts, showExcerpt = false } = Astro.props;
 ---
 
-<div class="posts-list">
+<section class="posts-list" aria-label="Blog posts">
   {
-    posts.map((post) => (
-      <li>
-        <a href={`/posts/${post.slug}`}>
-          <>
-            <span>{post.data.title}</span>
-            <FormattedDate date={post.data.pubDate} />
-          </>
-        </a>
-      </li>
-    ))
+    posts.length === 0 ? (
+      <p class="posts-list__empty">No posts found.</p>
+    ) : (
+      <ul class="posts-list__items">
+        {posts.map((post) => (
+          <li class="posts-list__item">
+            <article class="post-preview">
+              <header class="post-preview__header">
+                <h3 class="post-preview__title">
+                  <a href={`/posts/${post.slug}`} class="post-preview__link">
+                    {post.data.title}
+                  </a>
+                </h3>
+                <FormattedDate date={post.data.pubDate} />
+              </header>
+              {showExcerpt && post.data.description && (
+                <p class="post-preview__excerpt">{post.data.description}</p>
+              )}
+            </article>
+          </li>
+        ))}
+      </ul>
+    )
   }
-</div>
+</section>
+
 <style>
-  li {
-    list-style-type: none;
-    margin-bottom: 1rem;
+  .posts-list__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  a {
+  .posts-list__item {
+    margin-bottom: 2rem;
+  }
+
+  .post-preview__header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .post-preview__title {
+    margin: 0;
+    font-size: 1.25rem;
+    flex: 1;
+  }
+
+  .post-preview__link {
+    color: var(--primary-text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .post-preview__link:hover {
+    color: var(--accent-color, #0066cc);
+    text-decoration: underline;
+  }
+
+  .post-preview__excerpt {
+    color: rgba(var(--primary-text-value), 0.7);
+    margin: 0.5rem 0 0 0;
+    line-height: 1.6;
+  }
+
+  .posts-list__empty {
+    text-align: center;
+    color: rgba(var(--primary-text-value), 0.6);
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .post-preview__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
   }
 </style>

@@ -17,62 +17,105 @@ const { isHome, title, subtitle, details, navItems, content } = Astro.props;
 const hasHeaderTexts = Boolean(title || subtitle || details);
 ---
 
-<header class={isHome ? "header--home" : "header--alt"}>
-  {hasHeaderTexts && (
-    <div class="header-texts">
-      {title && <h1>{title}</h1>}
-      {subtitle && <h2>{subtitle}</h2>}
-      {details && <p>{details}</p>}
-    </div>
-  )}
+<header class={`header ${isHome ? "header--home" : "header--page"}`}>
+  {
+    hasHeaderTexts && (
+      <div class="header__content">
+        {title && <h1 class="header__title">{title}</h1>}
+        {subtitle && <h2 class="header__subtitle">{subtitle}</h2>}
+        {details && <p class="header__details">{details}</p>}
+      </div>
+    )
+  }
+
   {!isHome && <Breadcrumbs />}
-  {isHome && navItems?.length > 0 && <Navigation navItems={navItems} />}
-  {isHome && <Socials />}
+
+  <div class="header__navigation">
+    {isHome && navItems?.length > 0 && <Navigation navItems={navItems} />}
+    {isHome && <Socials />}
+  </div>
+
   {content && <TOC content={content} />}
 </header>
 
 <style>
-  header {
+  .header {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 0;
+    gap: 1.5rem;
     max-width: 30rem;
-    padding: 4rem 2rem;
+    padding: 2rem;
   }
 
-  header * {
-    margin-bottom: 0;
+  .header--home {
+    justify-content: flex-start;
+    min-height: 100vh;
   }
 
-  .header--alt {
+  .header--page {
+    justify-content: flex-start;
+  }
+
+  .header__content > * {
+    margin: 0;
+  }
+
+  .header__title {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .header__subtitle {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    margin-bottom: 1rem;
+    color: rgba(var(--primary-text-value), 0.8);
+  }
+
+  .header__details {
+    line-height: 1.6;
+    color: rgba(var(--primary-text-value), 0.7);
+  }
+
+  .header__navigation {
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-  }
-
-  .header-texts > h2 {
-    margin-top: 0.3rem;
-    margin-bottom: 1.3rem;
-  }
-
-  header h1 {
-    line-height: 1;
+    margin-top: auto;
   }
 
   @media only screen and (min-width: 1024px) {
-    header {
+    .header {
       position: sticky;
       top: 0;
-      width: 40%;
-      padding: 6rem 2rem;
-      max-height: 100vh;
+      height: 100vh;
+      padding: 4rem 2rem;
+      overflow-y: auto;
     }
+
     .header--home {
+      width: 40%;
       justify-content: space-between;
     }
-    .header--alt {
-      justify-content: flex-start;
+
+    .header--page {
       width: 30%;
+      justify-content: flex-start;
+    }
+
+    .header__navigation {
+      margin-top: 0;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .header {
+      padding: 1.5rem;
+      max-width: 100%;
+    }
+
+    .header--home {
+      min-height: auto;
     }
   }
 </style>

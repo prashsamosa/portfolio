@@ -1,37 +1,36 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "tw:inline-flex tw:items-center tw:justify-center tw:whitespace-nowrap tw:rounded-md tw:text-sm tw:font-medium tw:transition-colors tw:focus-visible:outline-hidden tw:focus-visible:ring-1 tw:focus-visible:ring-ring tw:disabled:pointer-events-none tw:disabled:opacity-50",
+  "tw:inline-flex tw:items-center tw:justify-center tw:whitespace-nowrap tw:rounded-md tw:text-sm tw:font-medium tw:ring-offset-background tw:transition-colors tw:focus-visible:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-ring tw:focus-visible:ring-offset-2 tw:disabled:pointer-events-none tw:disabled:opacity-50",
   {
     variants: {
       variant: {
         default:
-          "tw:bg-[#191919] tw:text-[#ffffff] tw:shadow tw:hover:bg-[#191919]/90",
+          "tw:bg-primary tw:text-primary-foreground tw:hover:bg-primary/90",
         destructive:
-          "tw:bg-destructive tw:text-destructive-foreground tw:shadow-sm tw:hover:bg-destructive/90",
+          "tw:bg-destructive tw:text-destructive-foreground tw:hover:bg-destructive/90",
         outline:
-          "tw:border tw:border-[#e2e8f0] tw:bg-[#f6f7f9] tw:text-[#47546b] tw:shadow-sm tw:hover:bg-[#f6f7f9]/90",
+          "tw:border tw:border-input tw:bg-background tw:hover:bg-accent tw:hover:text-accent-foreground",
         secondary:
-          "tw:bg-[#191919]/70 tw:text-[#ffffff] tw:shadow-sm tw:hover:bg-[#191919]",
-        ghost: "tw:hover:bg-[#f6f7f9] tw:hover:text-[#47546b]",
-        link: "tw:text-[#191919] tw:underline-offset-4 tw:hover:underline",
+          "tw:bg-secondary tw:text-secondary-foreground tw:hover:bg-secondary/80",
+        ghost: "tw:hover:bg-accent tw:hover:text-accent-foreground",
+        link: "tw:text-primary tw:underline-offset-4 tw:hover:underline",
       },
       size: {
-        default: "tw:h-9 tw:px-4 tw:py-2",
-        sm: "tw:h-8 tw:rounded-md tw:px-3 tw:text-xs",
-        lg: "tw:h-10 tw:rounded-md tw:px-8",
-        icon: "tw:h-9 tw:w-9",
+        default: "tw:h-10 tw:px-4 tw:py-2",
+        sm: "tw:h-9 tw:rounded-md tw:px-3",
+        lg: "tw:h-11 tw:rounded-md tw:px-8",
+        icon: "tw:h-10 tw:w-10",
       },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 export interface ButtonProps
@@ -50,7 +49,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  },
+  }
 );
 Button.displayName = "Button";
 
