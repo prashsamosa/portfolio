@@ -15,5 +15,5 @@ tags:
     "UploadThing",
   ]
 featured: true
-featuredOrder: 3
+featuredOrder: 4
 ---

@@ -7,5 +7,5 @@ liveLink: "https://codesculptor.vercel.app/"
 github: "https://github.com/prashsamosa/snap"
 tags: ["React", "JavaScript", "ShadcnUI"]
 featured: false
-featuredorder: 5
+featuredorder: 6
 ---

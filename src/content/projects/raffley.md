@@ -9,7 +9,7 @@ tags:
     "Elixir", "Phoenix LiveView", "HEEx", "Ecto", "PostgreSQL", "TailwindCSS", "PubSub"
   ]
 featured: true
-featuredOrder: 1
+featuredOrder: 2
 ---
 
 

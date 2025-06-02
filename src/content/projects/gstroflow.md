@@ -6,5 +6,5 @@ coverAlt: "architecture of service"
 github: "https://github.com/prashsamosa/GastroFlow-Kitchen-Microservice"
 tags: ["Golang", "gRPC", "Protocol Buffers", "Microservices"]
 featured: true
-featuredorder: 4
+featuredorder: 5
 ---
