@@ -51,7 +51,7 @@ git clone https://github.com/prashsamosa/portfolio.git
 2. Change to the project directory:
 
 ```sh
-cd Portfolio-XD
+cd portfolio
 ```
 
 3. Install the dependencies:
