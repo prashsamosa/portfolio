@@ -1,6 +1,5 @@
 <div align="center">
 <h1 align="center">
-<br>https://portfolio-xd.pages.dev/</h1>
 <h3>◦ Developed with the software and tools below.</h3>
 
 <p align="center">
