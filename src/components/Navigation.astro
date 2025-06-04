@@ -25,9 +25,28 @@ const { navItems } = Astro.props;
 </nav>
 
 <script>
-  // Add active state management
+  // Add active state management without URL hash interference
   const navLinks = document.querySelectorAll(".nav__link");
   const sections = document.querySelectorAll("[id]");
+
+  // Track user interaction to prevent initial hash setting
+  let hasUserInteracted = false;
+
+  // Track user clicks on navigation links
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      hasUserInteracted = true;
+    });
+  });
+
+  // Track scrolling as user interaction
+  let scrollTimeout: ReturnType<typeof setTimeout>;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      hasUserInteracted = true;
+    }, 100);
+  }, { passive: true });
 
   const observerOptions = {
     root: null,
@@ -38,11 +57,15 @@ const { navItems } = Astro.props;
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        // Update active navigation state
         navLinks.forEach((link) => link.classList.remove("nav__link--active"));
         const activeLink = document.querySelector(
           `[data-section="${entry.target.id}"]`
         );
         activeLink?.classList.add("nav__link--active");
+
+        // Don't update URL hash on initial page load
+        // Let the main page's PortfolioLayoutManager handle URL updates
       }
     });
   }, observerOptions);

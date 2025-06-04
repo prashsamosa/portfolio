@@ -160,6 +160,18 @@ const capitalize = (str: string): string =>
 </style>
 
 <script>
+  // Clear hash on page load if user didn't intentionally navigate to a section
+  (function() {
+    const referrer = document.referrer;
+    const currentDomain = window.location.hostname;
+    const isExternalReferrer = !referrer || !referrer.includes(currentDomain);
+
+    // If there's a hash but user came from external source or direct URL, clear it
+    if (window.location.hash && (isExternalReferrer || !document.referrer)) {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  })();
+
   // Type definitions for better code completion
   interface LayoutManager {
     init(): void;
@@ -173,11 +185,34 @@ const capitalize = (str: string): string =>
     private intersectionObserver?: IntersectionObserver;
     private readonly DESKTOP_BREAKPOINT = 1024;
     private readonly DEBOUNCE_DELAY = 300;
+    private hasUserInteracted = false;
 
     init(): void {
       this.alignLastSection();
       this.observeVisibility();
       this.setupEventListeners();
+      this.setupUserInteractionDetection();
+    }
+
+    private setupUserInteractionDetection(): void {
+      // Track user interactions to prevent automatic hash updates on page load
+      const interactionEvents = ['scroll', 'click', 'keydown', 'touchstart'];
+
+      const handleUserInteraction = () => {
+        this.hasUserInteracted = true;
+        interactionEvents.forEach(event => {
+          document.removeEventListener(event, handleUserInteraction);
+        });
+      };
+
+      interactionEvents.forEach(event => {
+        document.addEventListener(event, handleUserInteraction, { once: true });
+      });
+
+      // Allow hash updates after a delay (in case page loads with an intended hash)
+      setTimeout(() => {
+        this.hasUserInteracted = true;
+      }, 2000);
     }
 
     private setupEventListeners(): void {
@@ -261,9 +296,9 @@ const capitalize = (str: string): string =>
             if (entry.isIntersecting) {
               section.classList.add("section-focus");
 
-              // Update URL hash without triggering scroll
+              // Only update URL hash if user has interacted with the page
               const sectionId = section.id;
-              if (sectionId && window.location.hash !== `#${sectionId}`) {
+              if (sectionId && this.hasUserInteracted && window.location.hash !== `#${sectionId}`) {
                 history.replaceState(null, "", `#${sectionId}`);
               }
             } else {
@@ -314,157 +349,3 @@ const capitalize = (str: string): string =>
   // Cleanup on page unload
   window.addEventListener("beforeunload", () => layoutManager.destroy());
 </script>
-
-<!-- ---
-import slugify from "slugify";
-import Layout from "@/layouts/Layout.astro";
-import AboutSection from "@/components/Sections/AboutSection.astro";
-import ExperienceSection from "@/components/Sections/ExperienceSection.astro";
-import EducationSection from "@/components/Sections/EducationSection.astro";
-import SkillsSection from "@/components/Sections/SkillsSection.astro";
-import ProjectsSection from "@/components/Sections/ProjectsSection.astro";
-import PostsSection from "@/components/Sections/PostsSection.astro";
-
-const sectionComponents = {
-  about: AboutSection,
-  stack: SkillsSection,
-  projects: ProjectsSection,
-  education: EducationSection,
-  experience: ExperienceSection,
-  posts: PostsSection,
-};
-
-const myInfo = {
-  name: "Prashant Bhardwaj",
-  title: "",
-  description: "",
-};
-
-//Excluse Say Hi from navbar
-// const navItems = Object.keys(sectionComponents).slice(0, -1);
-const navItems = Object.keys(sectionComponents);
----
-
-<Layout
-  isHome={true}
-  title={myInfo.name}
-  subtitle={myInfo.title}
-  details={myInfo.description}
-  navItems={navItems}
->
-  {
-    Object.keys(sectionComponents).map((section) => {
-      const SpecificSectionComponent = sectionComponents[section];
-      return (
-        <section id={slugify(section)}>
-          <h1>{section.charAt(0).toUpperCase() + section.slice(1)}</h1>
-          {SpecificSectionComponent && <SpecificSectionComponent />}
-        </section>
-      );
-    })
-  }
-</Layout>
-
-<style>
-  section {
-    padding-top: 0;
-    padding-bottom: 6rem;
-  }
-
-  h1 {
-    text-transform: uppercase;
-    font-size: 1.7rem;
-    margin-bottom: 2.5rem;
-  }
-
-  h2 {
-    font-size: 1rem;
-  }
-
-  @media only screen and (min-width: 1024px) {
-    section {
-      scroll-margin-top: 6rem;
-      padding: 0;
-      padding-bottom: 6rem;
-      opacity: 0.5;
-      transition-duration: 500ms;
-    }
-
-    .section-focus {
-      opacity: 1 !important;
-    }
-
-    section:last-of-type {
-      padding-bottom: 0;
-    }
-  }
-</style>
-
-<script is:inline>
-  // Debounce function (since import is not available in inline scripts)
-  function debounce(func, wait, options = {}) {
-    let timeout;
-    return function (...args) {
-      const later = () => {
-        timeout = null;
-        if (options.trailing) func.apply(this, args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  /* Handles aligning the header of the last section to the header on the left nav menu*/
-  function alignLastSectionToHeader() {
-    const lastSection = document.querySelector(
-      "section:last-of-type"
-    );
-
-    if (!lastSection) return;
-
-    if (window.innerWidth < 1024) {
-      lastSection.style.paddingBottom = "";
-      return;
-    }
-    const header = document.querySelector("header");
-    if (!header) return;
-    const headerPaddingTop = parseInt(
-      window.getComputedStyle(header).getPropertyValue("padding-top")
-    );
-    const headerPaddingBottom = parseInt(
-      window.getComputedStyle(header).getPropertyValue("padding-bottom")
-    );
-
-    let lastSectionHeight =
-      parseInt(
-        window.getComputedStyle(lastSection).getPropertyValue("height")
-      ) -
-      parseInt(
-        window.getComputedStyle(lastSection).getPropertyValue("padding-bottom")
-      );
-
-    let paddingBottomValue =
-      window.innerHeight -
-      headerPaddingTop -
-      headerPaddingBottom -
-      lastSectionHeight;
-
-    lastSection.style.paddingBottom = `${paddingBottomValue.toString()}px`;
-
-    // Prevent footer from colliding into the last section
-
-    const footer = document.querySelector("footer");
-    if (!footer) return;
-    const footerHeight = parseInt(
-      window.getComputedStyle(footer).getPropertyValue("height")
-    );
-
-    footer.style.position =
-      paddingBottomValue < footerHeight ? "relative" : "absolute";
-
-    footer.style.marginTop = paddingBottomValue < footerHeight ? "6rem" : "0px";
-  }
-
-  document.addEventListener("DOMContentLoaded", alignLastSectionToHeader);
-  window.addEventListener("resize", debounce(alignLastSectionToHeader, 500, { trailing: true }));
-</script> -->
