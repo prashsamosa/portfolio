@@ -1,6 +1,5 @@
 <div align="center">
 <h1 align="center">
-<br>https://portfolio-xd.pages.dev/</h1>
 <h3>◦ Developed with the software and tools below.</h3>
 
 <p align="center">
@@ -35,7 +34,7 @@ My personal portfolio website built using the Astro framework and hosted on Clou
 
 ## 🎈 Live Site
 
-https://portfolio-xd.pages.dev/
+https://portfolio.prashanttbhardwajj.workers.dev/
 
 ---
 
@@ -52,7 +51,7 @@ git clone https://github.com/prashsamosa/portfolio.git
 2. Change to the project directory:
 
 ```sh
-cd Portfolio-XD
+cd portfolio
 ```
 
 3. Install the dependencies:
