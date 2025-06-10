@@ -20,7 +20,7 @@
 - [🎈 Live Site](#-live-site)
 - [🚀 Getting Started](#-getting-started)
   - [🔧 Installation](#-installation)
-  - [🤖 Running Portfolio-XD](#-running-portfolio_v1)
+ 
 
 ---
 
@@ -60,7 +60,7 @@ cd portfolio
 ► npm install
 ```
 
-### 🤖 Running Portfolio-XD
+### 🤖 Running Portfolio
 
 ```sh
 ► npm run dev
