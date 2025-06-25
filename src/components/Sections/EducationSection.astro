@@ -21,7 +21,6 @@ try {
     educations.length > 0 ? (
       educations.map(({ id, data: education }) => (
         <EducationCard
-          key={id}
           timespan={education?.timeline ?? "Timeline not available"}
           title={education?.title ?? "Title not available"}
           organization={education?.organization ?? "Organization not available"}

@@ -8,22 +8,15 @@ import Layout from "@/layouts/Layout.astro";
 const { frontmatter, content } = Astro.props;
 const stats = readingTime(content);
 
-const customMeta = {
-  description:
-    frontmatter.description ||
-    frontmatter.excerpt ||
-    `${content.slice(0, 160)}...`,
-  keywords: frontmatter.tags?.join(", ") || "blog, article, technology",
-  ogImage: frontmatter.cover || "/blog-og-image.png",
-  canonicalUrl: Astro.url.href,
-};
-
 const blogStructuredData = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: frontmatter.title,
-  description: customMeta.description,
-  image: customMeta.ogImage,
+  description:
+    frontmatter.description ||
+    frontmatter.excerpt ||
+    `${content.slice(0, 160)}...`,
+  image: frontmatter.cover || "/blog-og-image.png",
   author: {
     "@type": "Person",
     name: "Prashant Bhardwaj",
@@ -46,7 +39,26 @@ const blogStructuredData = {
 };
 ---
 
-<Layout isHome={false} title={frontmatter.title} customMeta={customMeta}>
+<Layout isHome={false} title={frontmatter.title}>
+  <Fragment slot="head">
+    <!-- Custom meta tags -->
+    <meta
+      name="description"
+      content={frontmatter.description ||
+        frontmatter.excerpt ||
+        `${content.slice(0, 160)}...`}
+    />
+    <meta
+      name="keywords"
+      content={frontmatter.tags?.join(", ") || "blog, article, technology"}
+    />
+    <meta
+      property="og:image"
+      content={frontmatter.cover || "/blog-og-image.png"}
+    />
+    <link rel="canonical" href={Astro.url.href} />
+  </Fragment>
+
   <article itemscope itemtype="https://schema.org/BlogPosting">
     <header class="post-header">
       <h1 itemprop="headline">{frontmatter.title}</h1>
