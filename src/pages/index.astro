@@ -8,7 +8,6 @@ import SkillsSection from "@/components/Sections/SkillsSection.astro";
 import ProjectsSection from "@/components/Sections/ProjectsSection.astro";
 import PostsSection from "@/components/Sections/PostsSection.astro";
 
-// Section configuration with metadata
 const SECTION_CONFIG = {
   about: {
     component: AboutSection,
@@ -42,24 +41,17 @@ const SECTION_CONFIG = {
   },
 } as const;
 
-// Personal information configuration
 const PERSONAL_INFO = {
   name: "Prashant Bhardwaj",
-  title: "dev", // Consider adding a proper title
-  description: "I read books and write code.", // Consider adding a description
+  title: "dev",
+  description: "I read books and write code.",
 } as const;
 
-// Get sections sorted by order
 const sections = Object.entries(SECTION_CONFIG).sort(
   ([, a], [, b]) => a.order - b.order
 );
 
-// Extract navigation items (all sections in this case)
 const navItems = sections.map(([key]) => key);
-
-// Helper function to capitalize section names
-const capitalize = (str: string): string =>
-  str.charAt(0).toUpperCase() + str.slice(1);
 ---
 
 <Layout
@@ -72,7 +64,7 @@ const capitalize = (str: string): string =>
   {
     sections.map(([sectionKey, sectionConfig]) => {
       const SectionComponent = sectionConfig.component;
-      const sectionId = slugify(sectionKey, { lower: true });
+      const sectionId = slugify(sectionKey ?? "", { lower: true });
 
       return (
         <section
@@ -91,7 +83,6 @@ const capitalize = (str: string): string =>
 </Layout>
 
 <style>
-  /* Section Base Styles */
   .portfolio-section {
     padding-bottom: 6rem;
     transition: opacity 500ms ease-in-out;
@@ -110,14 +101,12 @@ const capitalize = (str: string): string =>
     position: relative;
   }
 
-  /* Typography Hierarchy */
   h2 {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
   }
 
-  /* Desktop Styles */
   @media (min-width: 1024px) {
     .portfolio-section {
       scroll-margin-top: 6rem;
@@ -134,22 +123,19 @@ const capitalize = (str: string): string =>
       padding-bottom: 0;
     }
 
-    /* Enhanced focus states for accessibility */
     .portfolio-section:focus-visible {
-      outline: 2px solid var(--color-ring, #FFFFFF);
+      outline: 2px solid var(--color-ring, #ffffff);
       outline-offset: 4px;
       border-radius: 4px;
     }
   }
 
-  /* Reduced motion preferences */
   @media (prefers-reduced-motion: reduce) {
     .portfolio-section {
       transition: none;
     }
   }
 
-  /* Print styles */
   @media print {
     .portfolio-section {
       break-inside: avoid;
@@ -159,63 +145,50 @@ const capitalize = (str: string): string =>
   }
 </style>
 
-<script>
-  // Clear hash on page load if user didn't intentionally navigate to a section
-  (function() {
+<script is:script>
+  (function () {
     const referrer = document.referrer;
     const currentDomain = window.location.hostname;
     const isExternalReferrer = !referrer || !referrer.includes(currentDomain);
 
-    // If there's a hash but user came from external source or direct URL, clear it
-    if (window.location.hash && (isExternalReferrer || !document.referrer)) {
-      history.replaceState(null, "", window.location.pathname + window.location.search);
+    if (window.location.hash && isExternalReferrer) {
+      history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search
+      );
     }
   })();
 
-  // Type definitions for better code completion
-  interface LayoutManager {
-    init(): void;
-    handleResize(): void;
-    alignLastSection(): void;
-    observeVisibility(): void;
-  }
+  class PortfolioLayoutManager {
+    resizeObserver;
+    intersectionObserver;
+    DESKTOP_BREAKPOINT = 1024;
+    DEBOUNCE_DELAY = 300;
+    hasUserInteracted = false;
 
-  class PortfolioLayoutManager implements LayoutManager {
-    private resizeObserver?: ResizeObserver;
-    private intersectionObserver?: IntersectionObserver;
-    private readonly DESKTOP_BREAKPOINT = 1024;
-    private readonly DEBOUNCE_DELAY = 300;
-    private hasUserInteracted = false;
-
-    init(): void {
+    init() {
       this.alignLastSection();
       this.observeVisibility();
       this.setupEventListeners();
       this.setupUserInteractionDetection();
     }
 
-    private setupUserInteractionDetection(): void {
-      // Track user interactions to prevent automatic hash updates on page load
-      const interactionEvents = ['scroll', 'click', 'keydown', 'touchstart'];
-
-      const handleUserInteraction = () => {
+    setupUserInteractionDetection() {
+      const events = ["scroll", "click", "keydown", "touchstart"];
+      const handler = () => {
         this.hasUserInteracted = true;
-        interactionEvents.forEach(event => {
-          document.removeEventListener(event, handleUserInteraction);
-        });
+        events.forEach((e) => document.removeEventListener(e, handler));
       };
-
-      interactionEvents.forEach(event => {
-        document.addEventListener(event, handleUserInteraction, { once: true });
-      });
-
-      // Allow hash updates after a delay (in case page loads with an intended hash)
+      events.forEach((e) =>
+        document.addEventListener(e, handler, { once: true })
+      );
       setTimeout(() => {
         this.hasUserInteracted = true;
       }, 2000);
     }
 
-    private setupEventListeners(): void {
+    setupEventListeners() {
       if ("ResizeObserver" in window) {
         this.resizeObserver = new ResizeObserver(
           this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY)
@@ -229,20 +202,19 @@ const capitalize = (str: string): string =>
       }
     }
 
-    handleResize(): void {
+    handleResize() {
       this.alignLastSection();
     }
 
-    alignLastSection(): void {
+    alignLastSection() {
       const lastSection = document.querySelector(
         ".portfolio-section:last-of-type"
-      ) as HTMLElement;
-      const header = document.querySelector("header") as HTMLElement;
-      const footer = document.querySelector("footer") as HTMLElement;
+      );
+      const header = document.querySelector("header");
+      const footer = document.querySelector("footer");
 
       if (!lastSection || !header) return;
 
-      // Reset styles for mobile
       if (window.innerWidth < this.DESKTOP_BREAKPOINT) {
         lastSection.style.paddingBottom = "";
         if (footer) {
@@ -255,13 +227,13 @@ const capitalize = (str: string): string =>
       try {
         const headerStyle = getComputedStyle(header);
         const headerPadding =
-          parseInt(headerStyle.paddingTop) +
-          parseInt(headerStyle.paddingBottom);
+          parseInt(headerStyle.paddingTop || "0") +
+          parseInt(headerStyle.paddingBottom || "0");
 
         const lastSectionStyle = getComputedStyle(lastSection);
         const lastSectionHeight =
-          parseInt(lastSectionStyle.height) -
-          parseInt(lastSectionStyle.paddingBottom);
+          parseInt(lastSectionStyle.height || "0") -
+          parseInt(lastSectionStyle.paddingBottom || "0");
 
         const requiredPadding = Math.max(
           0,
@@ -270,35 +242,35 @@ const capitalize = (str: string): string =>
 
         lastSection.style.paddingBottom = `${requiredPadding}px`;
 
-        // Handle footer positioning
         if (footer) {
-          const footerHeight = parseInt(getComputedStyle(footer).height);
-          const shouldFloatFooter = requiredPadding >= footerHeight;
+          const footerHeight = parseInt(getComputedStyle(footer).height || "0");
+          const shouldFloat = requiredPadding >= footerHeight;
 
-          footer.style.position = shouldFloatFooter ? "absolute" : "relative";
-          footer.style.marginTop = shouldFloatFooter ? "0" : "6rem";
+          footer.style.position = shouldFloat ? "absolute" : "relative";
+          footer.style.marginTop = shouldFloat ? "0" : "6rem";
         }
       } catch (error) {
         console.warn("Error aligning last section:", error);
       }
     }
 
-    observeVisibility(): void {
+    observeVisibility() {
       if (!("IntersectionObserver" in window)) return;
-
       const sections = document.querySelectorAll(".portfolio-section");
 
       this.intersectionObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            const section = entry.target as HTMLElement;
+            const section = entry.target;
 
             if (entry.isIntersecting) {
               section.classList.add("section-focus");
-
-              // Only update URL hash if user has interacted with the page
               const sectionId = section.id;
-              if (sectionId && this.hasUserInteracted && window.location.hash !== `#${sectionId}`) {
+              if (
+                sectionId &&
+                this.hasUserInteracted &&
+                window.location.hash !== `#${sectionId}`
+              ) {
                 history.replaceState(null, "", `#${sectionId}`);
               }
             } else {
@@ -312,40 +284,30 @@ const capitalize = (str: string): string =>
         }
       );
 
-      sections.forEach((section) => {
-        this.intersectionObserver?.observe(section);
-      });
+      sections.forEach((section) => this.intersectionObserver.observe(section));
     }
 
-    private debounce<T extends (...args: any[]) => any>(
-      func: T,
-      wait: number
-    ): (...args: Parameters<T>) => void {
-      let timeout: ReturnType<typeof setTimeout>;
-
-      return (...args: Parameters<T>) => {
+    debounce(func, wait) {
+      let timeout;
+      return (...args) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
       };
     }
 
-    // Cleanup method for when component unmounts
-    destroy(): void {
+    destroy() {
       this.resizeObserver?.disconnect();
       this.intersectionObserver?.disconnect();
     }
   }
 
-  // Initialize the layout manager
   const layoutManager = new PortfolioLayoutManager();
 
-  // Initialize when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => layoutManager.init());
   } else {
     layoutManager.init();
   }
 
-  // Cleanup on page unload
   window.addEventListener("beforeunload", () => layoutManager.destroy());
 </script>

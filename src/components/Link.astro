@@ -1,6 +1,7 @@
 ---
-import RedirectArrow from '@/components/svgs/RedirectArrow.astro';
-import LinkArrow from '@/components/svgs/LinkArrow.astro';
+import RedirectArrow from "@/components/svgs/RedirectArrow.astro";
+import LinkArrow from "@/components/svgs/LinkArrow.astro";
+
 interface Props {
   redirect?: boolean;
   url: string;
@@ -8,6 +9,10 @@ interface Props {
 }
 
 const { url, name, redirect = false } = Astro.props as Props;
+const arrowClassList = [
+  "arrow-icon",
+  redirect ? "arrow-icon--redirect" : "",
+].filter(Boolean);
 ---
 
 <a
@@ -20,7 +25,7 @@ const { url, name, redirect = false } = Astro.props as Props;
   <span class="project-card__link__words">{name}</span>
   {
     redirect ? (
-      <RedirectArrow class:list={["arrow-icon", redirect && "arrow-icon--redirect"]} />
+      <RedirectArrow class:list={arrowClassList} />
     ) : (
       <LinkArrow class="arrow-icon" />
     )
@@ -33,19 +38,23 @@ const { url, name, redirect = false } = Astro.props as Props;
     height: 20px;
     transform: translate(8px, 5px);
   }
+
   .arrow-icon--redirect {
     transform: translateY(3px);
   }
+
   .project-card__link {
     color: rgba(var(--primary-text-value), 1);
     transition-duration: 500ms;
     display: flex;
     align-items: center;
   }
+
   .project-card__link__words {
     text-decoration: underline;
     text-underline-offset: 4px;
   }
+
   @media screen and (min-width: 1024px) {
     .arrow-icon {
       fill: rgba(var(--primary-text-value), 0.7);
@@ -53,9 +62,11 @@ const { url, name, redirect = false } = Astro.props as Props;
         transform 0.2s ease-in-out,
         opacity 0.5s;
     }
+
     .project-card__link:hover .arrow-icon {
       transform: translate(15px, 5px);
     }
+
     .project-card__link:hover .arrow-icon--redirect {
       fill: rgba(var(--primary-text-value), 1);
       transform: translate(2px, 0px);

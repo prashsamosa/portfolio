@@ -1,7 +1,7 @@
 ---
 import GithubIcon from "@/components/svgs/SocialIcons/github.astro";
 import LinkedinIcon from "@/components/svgs/SocialIcons/linkedin.astro";
-import EmailIcon from "@/components/svgs/SocialIcons/email.astro";;
+import EmailIcon from "@/components/svgs/SocialIcons/email.astro";
 ---
 
 <div class="social-icons">
@@ -9,6 +9,7 @@ import EmailIcon from "@/components/svgs/SocialIcons/email.astro";;
     class="social-icons__icon github"
     href="https://github.com/prashsamosa"
     target="_blank"
+    rel="noopener noreferrer"
     aria-label="GitHub (opens in a new tab)"
   >
     <GithubIcon width="36" height="36" />
@@ -17,14 +18,14 @@ import EmailIcon from "@/components/svgs/SocialIcons/email.astro";;
     class="social-icons__icon linkedin"
     href="https://www.linkedin.com/in/prashant-bhardwaj20/"
     target="_blank"
-    aria-label="Linkedin (opens in a new tab)"
+    rel="noopener noreferrer"
+    aria-label="LinkedIn (opens in a new tab)"
   >
     <LinkedinIcon width="36" height="36" />
   </a>
   <a
     class="social-icons__icon email"
-    href="mailto: prashanttbhardwajj@gmail.com"
-    target="_blank"
+    href="mailto:prashanttbhardwajj@gmail.com"
     aria-label="Email (opens email client)"
   >
     <EmailIcon width="36" height="36" />
@@ -39,10 +40,9 @@ import EmailIcon from "@/components/svgs/SocialIcons/email.astro";;
   }
 
   .social-icons__icon {
-    z-index: 1;
     cursor: pointer;
     opacity: 0.7;
-    transition-duration: 500ms;
+    transition: opacity 0.3s ease;
   }
 
   .social-icons__icon:hover {

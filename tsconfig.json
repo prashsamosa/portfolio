@@ -1,13 +1,11 @@
 {
-  "extends": "astro/tsconfigs/base",
+  "extends": "astro/tsconfigs/base", // ✅ Good - Astro's recommended base config
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": ".", // ✅ Makes path mapping relative to project root
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"] // ✅ Enables alias like "@/components/Foo"
     },
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "jsx": "react-jsx", // ✅ Required if using React components
+    "jsxImportSource": "react" // ✅ For automatic JSX runtime
   }
 }

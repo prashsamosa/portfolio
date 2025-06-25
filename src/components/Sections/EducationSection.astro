@@ -6,7 +6,7 @@ let educations = [];
 
 try {
   const aboutSnippets = await getCollection("aboutSnippets");
-  if (aboutSnippets && aboutSnippets.length > 0) {
+  if (aboutSnippets?.length) {
     educations = aboutSnippets
       .filter((entry) => entry.id.includes("education"))
       .sort((a, b) => (a.data?.order || 0) - (b.data?.order || 0));
@@ -19,11 +19,12 @@ try {
 <>
   {
     educations.length > 0 ? (
-      educations.map(({ data: education }) => (
+      educations.map(({ id, data: education }) => (
         <EducationCard
-          timespan={education?.timeline || "Timeline not available"}
-          title={education?.title || "Title not available"}
-          organization={education?.organization || "Organization not available"}
+          key={id}
+          timespan={education?.timeline ?? "Timeline not available"}
+          title={education?.title ?? "Title not available"}
+          organization={education?.organization ?? "Organization not available"}
         />
       ))
     ) : (

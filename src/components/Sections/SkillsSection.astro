@@ -6,12 +6,12 @@ import SkillsAccordion from "@/components/SkillsAccordion";
   <SkillsAccordion client:load />
 </div>
 
-<style>
+<style scoped>
   .skills-container {
     margin-bottom: 1rem;
   }
 
-  /* Fallback styling for when component is loading */
+  /* Fallback styling while component is loading */
   .skills-container:empty::after {
     content: "Loading skills...";
     display: block;

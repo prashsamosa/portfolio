@@ -1,6 +1,6 @@
 ---
 const path = Astro.url.pathname;
-const crumbs = path.split("/").filter((crumb) => crumb);
+const crumbs = path.split("/").filter(Boolean);
 crumbs.unshift("/");
 
 const links: Record<string, string> = {};
@@ -9,7 +9,12 @@ let tmpLink = "";
 crumbs.forEach((crumb, index) => {
   tmpLink = tmpLink.concat(index > 1 ? "/" : "", crumb);
   const linkName =
-    crumb === "/" ? "Home" : crumb[0].toUpperCase() + crumb.slice(1);
+    crumb === "/"
+      ? "Home"
+      : crumb
+          .split("-")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
   links[linkName] = tmpLink;
 });
 ---
@@ -18,7 +23,7 @@ crumbs.forEach((crumb, index) => {
   <ol class="breadcrumbs">
     {
       Object.entries(links).map(([name, url], index, array) => (
-        <li class="breadcrumbs__item">
+        <li class="breadcrumbs__item" key={url}>
           <a
             href={url}
             class={`breadcrumbs__link ${

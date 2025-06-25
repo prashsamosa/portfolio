@@ -7,29 +7,30 @@ let sortedPosts = [];
 
 try {
   const allPosts = await getCollection("posts");
-  if (allPosts && allPosts.length > 0) {
+  if (allPosts?.length) {
     sortedPosts = allPosts
-      .filter((post) => post.data?.pubDate) // Only include posts with valid dates
+      .filter((post) => post.data?.pubDate)
       .sort(
         (a, b) =>
-          new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
+          new Date(b.data.pubDate).valueOf() -
+          new Date(a.data.pubDate).valueOf()
       )
       .slice(0, 3);
   }
 } catch (error) {
-  console.error('Error loading posts:', error);
+  console.error("Error loading posts:", error);
 }
 ---
 
-<>
-  {sortedPosts.length > 0 ? (
+{
+  sortedPosts.length > 0 ? (
     <>
       <PostsList posts={sortedPosts} />
-      <p>
+      <div style="margin-top: 1rem;">
         <Link url="/posts" name="View more posts" />
-      </p>
+      </div>
     </>
   ) : (
     <p>No recent posts available at the moment.</p>
-  )}
-</>
+  )
+}

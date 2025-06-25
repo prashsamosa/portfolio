@@ -10,14 +10,14 @@ interface Props {
 const { posts, showExcerpt = false } = Astro.props;
 ---
 
-<section class="posts-list" aria-label="Blog posts">
+<section class="posts-list" aria-label="List of blog posts">
   {
     posts.length === 0 ? (
       <p class="posts-list__empty">No posts found.</p>
     ) : (
       <ul class="posts-list__items">
         {posts.map((post) => (
-          <li class="posts-list__item">
+          <li class="posts-list__item" key={post.slug}>
             <article class="post-preview">
               <header class="post-preview__header">
                 <h3 class="post-preview__title">

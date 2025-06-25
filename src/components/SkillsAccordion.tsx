@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -6,110 +5,90 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const SKILLS_DATA = {
-  languages: [
-    "TypeScript",
-    "Python",
-    "Golang",
-    "JavaScript",
-    "Elixir",
-    "Lua",
-  ],
-  frameworks: [
-    "Next",
-    "React",
-    "React Native (Expo)",
-    "Tailwind CSS",
-    "Router v7",
-    "Astro",
-    "Hono",
-    "Express",
-    "FastAPI",
+type TechCategory = {
+  id: string;
+  title: string;
+  badges: string[]; // shields.io image URLs
+};
 
-  ],
-  devTools: [
-    "Git",
-    "Docker",
-    "Cypress",
-    "Nginx",
-    "Neovim",
-    "RabbitMQ",
-  ],
-} as const;
-
-const ACCORDION_ITEMS = [
+const TECH_STACK: TechCategory[] = [
   {
     id: "languages",
     title: "Languages",
-    skills: SKILLS_DATA.languages,
+    badges: [
+      "https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white",
+      "https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white",
+      "https://img.shields.io/badge/Go-00ADD8?style=flat&logo=go&logoColor=white",
+      "https://img.shields.io/badge/Elixir-4B275F?style=flat&logo=elixir&logoColor=white",
+      "https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white",
+    ],
   },
   {
-    id: "frameworks",
-    title: "Frameworks and Libraries",
-    skills: SKILLS_DATA.frameworks,
+    id: "frontend",
+    title: "Frontend & UI Frameworks",
+    badges: [
+      "https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB",
+      "https://img.shields.io/badge/React_Native-20232A?style=flat&logo=react&logoColor=61DAFB",
+      "https://img.shields.io/badge/Next.js-000000?style=flat&logo=nextdotjs&logoColor=white",
+      "https://img.shields.io/badge/Astro-0D1117?style=flat&logo=astro&logoColor=white",
+      "https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white",
+      "https://img.shields.io/badge/shadcn/ui-000000?style=flat&logo=shadcnui&logoColor=white",
+    ],
   },
   {
-    id: "devTools",
-    title: "Developer Tools",
-    skills: SKILLS_DATA.devTools,
+    id: "backend",
+    title: "Backend & APIs",
+    badges: [
+      "https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white",
+      "https://img.shields.io/badge/Express.js-404D59?style=flat&logo=express&logoColor=white",
+      "https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white",
+      "https://img.shields.io/badge/Hono-E36002?style=flat&logo=hono&logoColor=white",
+      "https://img.shields.io/badge/Spring_Boot-F2F4F9?style=flat&logo=spring-boot",
+    ],
   },
-] as const;
+  {
+    id: "cloud",
+    title: "Cloud & DevOps",
+    badges: [
+      "https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white",
+      "https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white",
+      "https://img.shields.io/badge/Cloudflare-F38020?style=flat&logo=cloudflare&logoColor=white",
+      "https://img.shields.io/badge/Nginx-009639?style=flat&logo=nginx&logoColor=white",
+    ],
+  },
+  {
+    id: "tools",
+    title: "Basic Knowledge & Tools",
+    badges: [
+      "https://img.shields.io/badge/RabbitMQ-FF6600?style=flat&logo=rabbitmq&logoColor=white",
+      "https://img.shields.io/badge/Apache_Kafka-231F20?style=flat&logo=apache-kafka&logoColor=white",
+      "https://img.shields.io/badge/Expo-000020?style=flat&logo=expo&logoColor=white",
+      "https://img.shields.io/badge/DuckDB-FFF000?style=flat&logo=duckdb&logoColor=black",
+      "https://img.shields.io/badge/Phoenix-FF6600?style=flat&logo=phoenixframework&logoColor=white",
+      "https://img.shields.io/badge/TanStack_Router-FF4154?style=flat&logoColor=white",
+    ],
+  },
+];
 
-function SkillsList({ items }: { items: readonly string[] }) {
-  if (!items || items.length === 0) {
-    return <p className="tw:text-gray-500 tw:italic">No skills available</p>;
-  }
-
+function BadgeGrid({ badges }: { badges: string[] }) {
   return (
-    <ul className="tw:list-disc tw:grid tw:grid-cols-2 sm:tw:grid-cols-3 md:tw:grid-cols-4 lg:tw:grid-cols-6 tw:gap-x-4 tw:gap-y-2 tw:pl-5">
-      {items.map((item) => (
-        <li key={item} className="tw:text-sm tw:leading-relaxed">
-          {item}
-        </li>
+    <div className="tw:flex tw:flex-wrap tw:gap-2 tw:py-2">
+      {badges.map((src, idx) => (
+        <img key={idx} src={src} alt="tech badge" className="tw:h-6" />
       ))}
-    </ul>
+    </div>
   );
 }
 
 export default function SkillsAccordion() {
-  const [openValue, setOpenValue] = useState<string>("");
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // If scrolling down, close the accordion
-      if (currentScrollY > lastScrollY && openValue) {
-        setOpenValue("");
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [lastScrollY, openValue]);
-
   return (
     <div className="tw:w-full">
-      <Accordion
-        type="single"
-        collapsible
-        className="tw:w-full"
-        value={openValue}
-        onValueChange={setOpenValue}
-      >
-        {ACCORDION_ITEMS.map((section, index) => (
+      <Accordion type="single" collapsible className="tw:w-full">
+        {TECH_STACK.map((section, index) => (
           <AccordionItem key={section.id} value={`item-${index + 1}`}>
-            <AccordionTrigger className="tw:text-left">
-              {section.title}
-            </AccordionTrigger>
+            <AccordionTrigger>{section.title}</AccordionTrigger>
             <AccordionContent>
-              <SkillsList items={section.skills} />
+              <BadgeGrid badges={section.badges} />
             </AccordionContent>
           </AccordionItem>
         ))}

@@ -1,32 +1,32 @@
 ---
-import ResumeCard from '@/components/Cards/ResumeCard.astro';
-import { getCollection } from 'astro:content';
+import ResumeCard from "@/components/Cards/ResumeCard.astro";
+import { getCollection } from "astro:content";
 
 let experiences = [];
 
 try {
-  const aboutSnippets = await getCollection('aboutSnippets');
+  const aboutSnippets = await getCollection("aboutSnippets");
   if (aboutSnippets && aboutSnippets.length > 0) {
     experiences = aboutSnippets
-      .filter((entry) => entry.id.includes('experience'))
+      .filter((entry) => entry.id.includes("experience"))
       .sort((a, b) => (a.data?.order || 0) - (b.data?.order || 0));
   }
 } catch (error) {
-  console.error('Error loading experience data:', error);
+  console.error("Error loading experience data:", error);
 }
 ---
 
-<>
-  {experiences.length > 0 ? (
+{
+  experiences.length > 0 ? (
     experiences.map((job) => (
       <ResumeCard
-        timespan={job.data?.timeline || 'Timeline not available'}
-        title={job.data?.title || 'Title not available'}
-        organization={job.data?.organization || 'Organization not available'}
-        description={job.body || ''}
+        timespan={job.data?.timeline || "Timeline not available"}
+        title={job.data?.title || "Title not available"}
+        organization={job.data?.organization || "Organization not available"}
+        description={job.body || ""}
       />
     ))
   ) : (
     <p>Experience information is currently unavailable.</p>
-  )}
-</>
+  )
+}

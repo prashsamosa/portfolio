@@ -2,13 +2,19 @@
 interface Props {
   tags: string[];
 }
-
 const { tags } = Astro.props;
 ---
 
 <div class="project-card__tags">
-  {tags.map((tag) => <span class="project-card__tag">{tag}</span>)}
+  {
+    tags.map((tag) => (
+      <span class="project-card__tag" key={tag}>
+        {tag}
+      </span>
+    ))
+  }
 </div>
+
 <style>
   .project-card__tags {
     display: flex;
@@ -18,7 +24,6 @@ const { tags } = Astro.props;
   }
 
   .project-card__tag {
-    display: inline-block;
     font-size: 0.8rem;
     padding: 4px 10px;
     border: 1px solid rgba(var(--primary-text-value), 0.4);

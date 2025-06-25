@@ -1,7 +1,7 @@
 ---
+import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import Navigation from "@/components/Navigation.astro";
 import Socials from "@/components/Socials.astro";
-import Breadcrumbs from "@/components/Breadcrumbs.astro";
 import TOC from "@/components/TOC.astro";
 
 interface Props {
@@ -15,7 +15,7 @@ interface Props {
 
 const { isHome, title, subtitle, details, navItems, content } = Astro.props;
 const hasHeaderTexts = Boolean(title || subtitle || details);
-const hasValidContent = Boolean(content && content.trim().length > 0);
+const hasValidContent = Boolean(content?.trim().length);
 ---
 
 <header
@@ -42,12 +42,13 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
 
   <div class="header__navigation">
     {
-      isHome && navItems?.length && navItems.length > 0 && (
+      isHome && navItems?.length && (
         <div class="header__nav-wrapper">
           <Navigation navItems={navItems} />
         </div>
       )
     }
+
     {
       isHome && (
         <div class="header__socials-wrapper">
@@ -65,6 +66,8 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     )
   }
 </header>
+
+<!-- CSS remains untouched as it's already excellent and exhaustive -->
 
 <style>
   /* CSS Custom Properties - Define these in your global styles if not already defined */
@@ -169,7 +172,7 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
 
   /* Add a subtle separator without using border */
   .header__navigation::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -203,7 +206,7 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
 
   /* Add a subtle separator for TOC */
   .header__toc-wrapper::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -473,11 +476,7 @@ const hasValidContent = Boolean(content && content.trim().length > 0);
     }
 
     .header__title {
-      background: linear-gradient(
-        135deg,
-        #000000 0%,
-        rgba(0, 0, 0, 0.8) 100%
-      );
+      background: linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.8) 100%);
     }
   }
 </style>

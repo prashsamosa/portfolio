@@ -7,7 +7,7 @@ let filteredProjects = [];
 
 try {
   const allProjects = await getCollection("projects");
-  if (allProjects && allProjects.length > 0) {
+  if (allProjects?.length) {
     filteredProjects = allProjects
       .filter((project) => project.data?.featured)
       .sort(
@@ -19,35 +19,31 @@ try {
 }
 ---
 
-<>
-  {
-    filteredProjects.length > 0 ? (
-      <>
-        {filteredProjects.map((project) => (
-          <ProjectCard
-            class="projects-list__item"
-            title={project.data?.title || "Untitled Project"}
-            description={
-              project.data?.description || "No description available"
-            }
-            imagesrc={project.data?.cover?.src ? project.data.cover : undefined}
-            imageAlt={
-              project.data?.coverAlt || project.data?.title || "Project image"
-            }
-            github={project.data?.github}
-            liveLink={project.data?.liveLink}
-            postLink={project.data?.postLink}
-            tags={project.data?.tags || []}
-            href={`/projects/${project.slug}`}
-            featured={true}
-          />
-        ))}
-        <p>
-          <Link url="/projects" name="View more projects" />
-        </p>
-      </>
-    ) : (
-      <p>No featured projects available at the moment.</p>
-    )
-  }
-</>
+{
+  filteredProjects.length > 0 ? (
+    <>
+      {filteredProjects.map((project) => (
+        <ProjectCard
+          class="projects-list__item"
+          title={project.data?.title || "Untitled Project"}
+          description={project.data?.description || "No description available"}
+          imagesrc={project.data?.cover?.src ? project.data.cover : undefined}
+          imageAlt={
+            project.data?.coverAlt || project.data?.title || "Project image"
+          }
+          github={project.data?.github}
+          liveLink={project.data?.liveLink}
+          postLink={project.data?.postLink}
+          tags={project.data?.tags || []}
+          href={`/projects/${project.slug}`}
+          featured={true}
+        />
+      ))}
+      <div style="margin-top: 1rem;">
+        <Link url="/projects" name="View more projects" />
+      </div>
+    </>
+  ) : (
+    <p>No featured projects available at the moment.</p>
+  )
+}

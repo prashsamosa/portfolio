@@ -4,8 +4,9 @@ import Layout from "@/layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
 const allProjects = await getCollection("projects");
+
 const sortedProjects = allProjects.sort(
-  (a, b) => (a.data.featuredOrder || 999) - (b.data.featuredOrder || 999)
+  (a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999)
 );
 ---
 
@@ -17,12 +18,12 @@ const sortedProjects = allProjects.sort(
           class="projects-list__item"
           title={project.data.title}
           description={project.data.description}
-          imagesrc={project.data.cover?.src ? project.data.cover : undefined}
-          imageAlt={project.data.coverAlt}
+          imagesrc={project.data.cover ?? undefined}
+          imageAlt={project.data.coverAlt ?? "Project cover"}
           github={project.data.github}
           liveLink={project.data.liveLink}
           postLink={project.data.postLink}
-          tags={project.data.tags}
+          tags={project.data.tags ?? []}
           href={`/projects/${project.slug}`}
         />
       ))

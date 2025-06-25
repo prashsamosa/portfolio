@@ -7,43 +7,68 @@ import { toc } from "mdast-util-toc";
 import { unified } from "unified";
 
 const { content } = Astro.props;
+
+// Parse content to AST
 const mdast = fromMarkdown(content);
+
+// Generate ToC (max depth 3)
 const table = toc(mdast, { tight: true, maxDepth: 3 });
-let html;
+
+let html: string | undefined;
 try {
-  const mdTable = toMarkdown(table.map);
-  html = await unified().use(remarkParse).use(remarkHtml).process(mdTable);
+  if (table.map) {
+    const mdTable = toMarkdown(table.map);
+    const result = await unified()
+      .use(remarkParse)
+      .use(remarkHtml)
+      .process(mdTable);
+    html = result.toString();
+  }
 } catch (e) {
-  console.error("No heading found");
+  console.error("Error generating ToC:", e);
 }
 ---
 
 <div class="toc">
   <h2>Contents</h2>
-  {html || <p> No headings here 🫤</p>}
+  <div set:html={html || "<p>No headings here 🫤</p>"} />
 </div>
 
 <style is:global>
+  .toc {
+    display: none;
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+  }
+
   .toc h2 {
-    margin-top: 1rem !important;
+    font-size: 1.2rem;
     margin-bottom: 0.5rem;
   }
 
   .toc ul {
-    padding-left: 1.5rem;
-    margin-top: 0;
-  }
-
-  .toc ul:not(li ul) {
-    padding: 0;
+    padding-left: 1.25rem;
+    margin: 0;
   }
 
   .toc li {
-    list-style-type: none;
+    list-style: none;
+    margin-bottom: 0.25rem;
   }
-  .toc {
-    display: none;
+
+  .toc a {
+    color: rgba(var(--primary-text-value), 0.8);
+    text-decoration: none;
+    transition: color 0.3s ease;
   }
+
+  .toc a:hover {
+    color: rgba(var(--primary-text-value), 1);
+  }
+
   @media screen and (min-width: 1024px) {
     .toc {
       display: block;

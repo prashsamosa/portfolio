@@ -4,7 +4,6 @@ import "@/styles/normalize.css";
 import Header from "@/components/MainHeader.astro";
 
 interface Props {
-  // if isHome is true, padding will be added, and nav and socials will be included in header.
   isHome: boolean;
   title?: string;
   subtitle?: string;
@@ -13,14 +12,7 @@ interface Props {
   content?: string;
 }
 
-const {
-  isHome,
-  title,
-  subtitle,
-  details,
-  navItems = undefined,
-  content,
-} = Astro.props;
+const { isHome, title, subtitle, details, navItems, content } = Astro.props;
 
 const metadata = {
   title: "Prashant Bhardwaj",
@@ -33,16 +25,21 @@ const metadata = {
 <!doctype html>
 <html lang="en" dir="ltr">
   <head>
+    <!-- Meta -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content={metadata.author} />
     <meta name="description" content={metadata.description} />
     <title>{metadata.title}</title>
+
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#ffffff" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -51,7 +48,7 @@ const metadata = {
     />
   </head>
   <body>
-    <div class={`container ${!isHome && "container--alt"}`}>
+    <div class={`container${!isHome ? " container--alt" : ""}`}>
       <Header
         isHome={isHome}
         title={title}
@@ -60,7 +57,7 @@ const metadata = {
         navItems={navItems}
         content={content}
       />
-      <main class={!isHome && "main--alt"}>
+      <main class={isHome ? "" : "main--alt"}>
         <slot />
         <footer>
           <p>© Prashant Bhardwaj {new Date().getFullYear()}</p>
@@ -72,8 +69,6 @@ const metadata = {
 </html>
 
 <style is:global>
-  /* Base styling */
-
   :root {
     --primary-text: #ffffff;
     --primary-text-value: #ffffff;
@@ -102,21 +97,19 @@ const metadata = {
     margin-top: 0;
   }
 
-  h2 {
-    font-family: "Archivo Narrow", sans-serif;
-    /* color: var(--primary-text); */
-    font-size: 1.8rem;
-  }
-  h3 {
-    font-family: "Archivo Narrow", sans-serif;
-    /* color: var(--primary-text); */
-    font-size: 1.4rem;
-  }
-
+  h2,
   h3,
   h4,
   h5 {
     font-family: "Archivo Narrow", sans-serif;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  h3 {
+    font-size: 1.4rem;
   }
 
   a {
@@ -142,7 +135,7 @@ const metadata = {
     margin-block-end: 1em;
   }
 
-  P:first-of-type,
+  p:first-of-type,
   h2:first-of-type {
     margin-top: 0;
   }
@@ -161,24 +154,33 @@ const metadata = {
     position: relative;
   }
 
-  footer,
-  .footer--alt {
+  footer {
     font-family: "Poppins", sans-serif;
-    /* padding-bottom: 2rem; */
-    position: relative;
-    bottom: initial;
     padding-top: 4rem;
     padding-bottom: 4rem;
+    position: relative;
   }
 
   footer p {
     color: rgba(var(--primary-text-value), 0.6);
   }
+
   footer a {
     color: var(--primary-text);
   }
 
+  .container {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+
   @media only screen and (min-width: 1024px) {
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     main {
       width: 60%;
       padding: 6rem 2rem;
@@ -188,89 +190,22 @@ const metadata = {
       width: 70%;
     }
 
-    footer {
-      /* position: absolute; */
-
-      /* initialize footer style, will be changed in JS */
-      position: relative;
-      margin-top: 6rem;
-
-      padding-bottom: 0;
-      bottom: 6rem;
-    }
-  }
-
-  /* Animated Cursor Styling */
-
-  /* #cursor {
-    display: none;
-    position: fixed;
-    top: -5px;
-    left: -5px;
-    width: 40px;
-    height: 40px;
-    background-color: #ffffff;
-    border-radius: 50%;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    z-index: 999;
-    transition: all 200ms cubic-bezier(0.09, 0.55, 0.59, 0.97);
-  }
-
-  .hover-over-a {
-    width: 20px !important;
-    height: 20px !important;
-    background-color: white !important;
-    mix-blend-mode: difference !important;
-  }
-
-  .hover-over-text {
-    opacity: 0.15;
-  } */
-
-  /* Cap the width on tablet size */
-
-  .container {
-    max-width: 40rem;
-    margin: 0 auto;
-  }
-
-  @media only screen and (min-width: 1024px) {
-    @media only screen and (min-height: 1300px) {
-      /* mitigate issues of intersection observer dimming the wrong sections */
-      :root {
-        font-size: 18px;
-      }
-    }
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
     .container {
       display: flex;
       flex: 1;
-      padding-left: 1rem;
-      padding-right: 1rem;
+      padding: 0 1rem;
       max-width: 1050px;
       position: relative;
-      overflow-y: visible;
     }
 
     .container--alt {
       max-width: 75rem;
     }
 
-    h1 {
-      font-size: 2.8rem;
-    }
-
-    h2 {
-      font-size: 1.8rem;
-    }
-
-    #cursor {
-      display: block;
+    footer {
+      margin-top: 6rem;
+      padding-bottom: 0;
+      bottom: 6rem;
     }
   }
 
@@ -285,7 +220,6 @@ const metadata = {
 </style>
 
 <script is:inline>
-  // Handles focus and unfocus of sections
   document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll("section");
 
@@ -293,63 +227,23 @@ const metadata = {
       rootMargin: "-40% 0px -60% 0px",
     };
 
-    const intersectionCallback = function (entries, _observer) {
+    const observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        const navTarget = document.getElementById(
-          `${entry.target.getAttribute("id")}Nav`
-        );
+        const sectionId = entry.target.getAttribute("id");
+        const navTarget = document.getElementById(`${sectionId}Nav`);
 
         if (entry.isIntersecting) {
           entry.target.classList.add("section-focus");
-          // nav target may be excluded from being tracked
           if (navTarget) navTarget.classList.add("toggled");
-          return;
+        } else {
+          entry.target.classList.remove("section-focus");
+          if (navTarget) navTarget.classList.remove("toggled");
         }
-        entry.target.classList.remove("section-focus");
-
-        if (navTarget) navTarget.classList.remove("toggled");
       });
-    };
+    }, options);
 
-    const navObserver = new IntersectionObserver(intersectionCallback, options);
     sections.forEach(function (section) {
-      navObserver.observe(section);
+      observer.observe(section);
     });
-
-    // // Handles cursor animations
-    // const cursor = document.getElementById("cursor");
-
-    // const followCursorHandler = function (e) {
-    //   if (cursor) {
-    //     cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-    //   }
-    // };
-
-    // document.body.addEventListener("mousemove", function (e) {
-    //   followCursorHandler(e);
-    // });
-
-    // document.body.addEventListener("mouseover", function (e) {
-    //   const target = e.target;
-    //   const hasAnchorParent = target.closest && target.closest("a");
-    //   const isAnchor = target.tagName === "A";
-
-    //   if (cursor) {
-    //     if (hasAnchorParent || isAnchor) {
-    //       cursor.classList.add("hover-over-a");
-    //     } else {
-    //       cursor.classList.remove("hover-over-a");
-    //     }
-
-    //     if (!isAnchor) {
-    //       const textElements = ["H1", "H2", "P", "SPAN"];
-    //       if (textElements.indexOf(target.tagName) >= 0) {
-    //         cursor.classList.add("hover-over-text");
-    //       } else {
-    //         cursor.classList.remove("hover-over-text");
-    //       }
-    //     }
-    //   }
-    // });
   });
 </script>

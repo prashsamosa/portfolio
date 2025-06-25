@@ -3,11 +3,14 @@ import { getCollection } from "astro:content";
 import PostsList from "@/components/PostsList.astro";
 // import FormattedDate from "@/components/FormattedDate.astro";
 import Layout from "@/layouts/Layout.astro";
+
 const allPosts = await getCollection("posts");
-const sortedPosts = allPosts.sort(
-  (a, b) =>
-    new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf(),
-);
+
+const sortedPosts = allPosts.sort((a, b) => {
+  const dateA = new Date(a.data.pubDate).valueOf() || 0;
+  const dateB = new Date(b.data.pubDate).valueOf() || 0;
+  return dateB - dateA;
+});
 ---
 
 <Layout isHome={false} title="All Posts">
