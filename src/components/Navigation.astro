@@ -12,7 +12,7 @@ const { navItems } = Astro.props;
       navItems.map((item) => {
         const id = item.toLowerCase().replace(/\s+/g, "-");
         return (
-          <li class="nav__item" key={id}>
+          <li class="nav__item">
             <a href={`#${id}`} class="nav__link" data-section={id}>
               {item}
             </a>
@@ -24,6 +24,7 @@ const { navItems } = Astro.props;
 </nav>
 
 <script>
+  // --- Your script remains the same ---
   const navLinks = document.querySelectorAll(".nav__link");
   const sections = document.querySelectorAll("[id]");
 
@@ -69,20 +70,18 @@ const { navItems } = Astro.props;
 </script>
 
 <style>
+  /* --- Your styles remain the same --- */
   .nav {
     display: none;
   }
-
   .nav__list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
   .nav__item {
     margin-bottom: 0.5rem;
   }
-
   .nav__link {
     display: block;
     color: var(--primary-text);
@@ -96,18 +95,15 @@ const { navItems } = Astro.props;
     border-left: 2px solid transparent;
     padding-left: 0.5rem;
   }
-
   .nav__link:hover,
   .nav__link:focus {
     opacity: 0.7;
     outline: none;
   }
-
   .nav__link--active {
     opacity: 1;
     border-left-color: var(--accent-color, #ffffff);
   }
-
   @media only screen and (min-width: 1024px) {
     .nav {
       display: block;

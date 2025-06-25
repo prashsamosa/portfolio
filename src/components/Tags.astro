@@ -6,23 +6,17 @@ const { tags } = Astro.props;
 ---
 
 <div class="project-card__tags">
-  {
-    tags.map((tag) => (
-      <span class="project-card__tag" key={tag}>
-        {tag}
-      </span>
-    ))
-  }
+  {tags.map((tag) => <span class="project-card__tag">{tag}</span>)}
 </div>
 
 <style>
+  /* --- Your styles remain the same --- */
   .project-card__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 1.4rem;
   }
-
   .project-card__tag {
     font-size: 0.8rem;
     padding: 4px 10px;

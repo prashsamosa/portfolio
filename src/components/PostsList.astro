@@ -17,7 +17,7 @@ const { posts, showExcerpt = false } = Astro.props;
     ) : (
       <ul class="posts-list__items">
         {posts.map((post) => (
-          <li class="posts-list__item" key={post.slug}>
+          <li class="posts-list__item">
             <article class="post-preview">
               <header class="post-preview__header">
                 <h3 class="post-preview__title">
@@ -39,16 +39,15 @@ const { posts, showExcerpt = false } = Astro.props;
 </section>
 
 <style>
+  /* --- Your styles remain the same --- */
   .posts-list__items {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-
   .posts-list__item {
     margin-bottom: 2rem;
   }
-
   .post-preview__header {
     display: flex;
     justify-content: space-between;
@@ -56,36 +55,30 @@ const { posts, showExcerpt = false } = Astro.props;
     gap: 1rem;
     margin-bottom: 0.5rem;
   }
-
   .post-preview__title {
     margin: 0;
     font-size: 1.25rem;
     flex: 1;
   }
-
   .post-preview__link {
     color: var(--primary-text);
     text-decoration: none;
     transition: color 0.3s ease;
   }
-
   .post-preview__link:hover {
     color: var(--accent-color, #ffffff);
     text-decoration: underline;
   }
-
   .post-preview__excerpt {
     color: rgba(var(--primary-text-value), 0.7);
     margin: 0.5rem 0 0 0;
     line-height: 1.6;
   }
-
   .posts-list__empty {
     text-align: center;
     color: rgba(var(--primary-text-value), 0.6);
     font-style: italic;
   }
-
   @media (max-width: 768px) {
     .post-preview__header {
       flex-direction: column;

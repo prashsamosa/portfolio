@@ -23,7 +23,8 @@ crumbs.forEach((crumb, index) => {
   <ol class="breadcrumbs">
     {
       Object.entries(links).map(([name, url], index, array) => (
-        <li class="breadcrumbs__item" key={url}>
+        // The `key` prop has been removed from this <li> element to fix the error
+        <li class="breadcrumbs__item">
           <a
             href={url}
             class={`breadcrumbs__link ${
