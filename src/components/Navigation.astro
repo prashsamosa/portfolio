@@ -24,67 +24,127 @@ const { navItems } = Astro.props;
 </nav>
 
 <script>
-  // --- Your script remains the same ---
-  const navLinks = document.querySelectorAll(".nav__link");
-  const sections = document.querySelectorAll("[id]");
+  class NavigationManager {
+    navLinks;
+    sections;
+    observer;
+    hasUserInteracted = false;
+    scrollTimeout;
 
-  let hasUserInteracted = false;
+    constructor() {
+      this.navLinks = document.querySelectorAll(".nav__link");
+      this.sections = document.querySelectorAll("[id]");
+      this.init();
+    }
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      hasUserInteracted = true;
-    });
-  });
+    init() {
+      this.setupEventListeners();
+      this.setupIntersectionObserver();
+    }
 
-  let scrollTimeout;
-  window.addEventListener(
-    "scroll",
-    () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        hasUserInteracted = true;
-      }, 100);
-    },
-    { passive: true }
-  );
+    setupEventListeners() {
+      // Track user interaction
+      this.navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          this.hasUserInteracted = true;
+        });
+      });
 
-  const observerOptions = {
-    root: null,
-    rootMargin: "-20% 0px -80% 0px",
-    threshold: 0,
-  };
+      // Track scroll interaction
+      window.addEventListener(
+        "scroll",
+        () => {
+          clearTimeout(this.scrollTimeout);
+          this.scrollTimeout = setTimeout(() => {
+            this.hasUserInteracted = true;
+          }, 100);
+        },
+        { passive: true }
+      );
+    }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        navLinks.forEach((link) => link.classList.remove("nav__link--active"));
-        const activeLink = document.querySelector(
-          `[data-section="${entry.target.id}"]`
-        );
-        activeLink?.classList.add("nav__link--active");
+    setupIntersectionObserver() {
+      const observerOptions = {
+        root: null,
+        rootMargin: "-20% 0px -80% 0px",
+        threshold: 0,
+      };
+
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.setActiveLink(entry.target.id);
+          }
+        });
+      }, observerOptions);
+
+      this.sections.forEach((section) => {
+        if (section.id) {
+          this.observer.observe(section);
+        }
+      });
+    }
+
+    setActiveLink(sectionId) {
+      // Remove active class from all links
+      this.navLinks.forEach((link) =>
+        link.classList.remove("nav__link--active")
+      );
+
+      // Add active class to current link
+      const activeLink = document.querySelector(
+        `[data-section="${sectionId}"]`
+      );
+      if (activeLink) {
+        activeLink.classList.add("nav__link--active");
       }
-    });
-  }, observerOptions);
+    }
 
-  sections.forEach((section) => observer.observe(section));
+    destroy() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+      clearTimeout(this.scrollTimeout);
+    }
+  }
+
+  // Initialize navigation manager
+  let navigationManager;
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      navigationManager = new NavigationManager();
+    });
+  } else {
+    navigationManager = new NavigationManager();
+  }
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => {
+    if (navigationManager) {
+      navigationManager.destroy();
+    }
+  });
 </script>
 
 <style>
-  /* --- Your styles remain the same --- */
   .nav {
     display: none;
   }
+
   .nav__list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
+
   .nav__item {
     margin-bottom: 0.5rem;
   }
+
   .nav__link {
     display: block;
-    color: var(--primary-text);
+    color: var(--primary-text, currentColor);
     opacity: 0.4;
     text-decoration: none;
     text-transform: uppercase;
@@ -95,18 +155,32 @@ const { navItems } = Astro.props;
     border-left: 2px solid transparent;
     padding-left: 0.5rem;
   }
+
   .nav__link:hover,
   .nav__link:focus {
     opacity: 0.7;
     outline: none;
   }
+
+  .nav__link:focus-visible {
+    outline: 2px solid var(--accent-color, #ffffff);
+    outline-offset: 2px;
+  }
+
   .nav__link--active {
     opacity: 1;
     border-left-color: var(--accent-color, #ffffff);
   }
+
   @media only screen and (min-width: 1024px) {
     .nav {
       display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__link {
+      transition: none;
     }
   }
 </style>

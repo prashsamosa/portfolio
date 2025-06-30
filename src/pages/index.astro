@@ -64,7 +64,7 @@ const navItems = sections.map(([key]) => key);
   {
     sections.map(([sectionKey, sectionConfig]) => {
       const SectionComponent = sectionConfig.component;
-      const sectionId = slugify(sectionKey ?? "", { lower: true });
+      const sectionId = slugify(sectionKey, { lower: true });
 
       return (
         <section
@@ -144,7 +144,6 @@ const navItems = sections.map(([key]) => key);
     }
   }
 </style>
-
 
 <script>
   (function () {
@@ -228,13 +227,13 @@ const navItems = sections.map(([key]) => key);
       try {
         const headerStyle = getComputedStyle(header);
         const headerPadding =
-          parseInt(headerStyle.paddingTop || "0") +
-          parseInt(headerStyle.paddingBottom || "0");
+          parseInt(headerStyle.paddingTop || "0", 10) +
+          parseInt(headerStyle.paddingBottom || "0", 10);
 
         const lastSectionStyle = getComputedStyle(lastSection);
         const lastSectionHeight =
-          parseInt(lastSectionStyle.height || "0") -
-          parseInt(lastSectionStyle.paddingBottom || "0");
+          parseInt(lastSectionStyle.height || "0", 10) -
+          parseInt(lastSectionStyle.paddingBottom || "0", 10);
 
         const requiredPadding = Math.max(
           0,
@@ -244,7 +243,7 @@ const navItems = sections.map(([key]) => key);
         lastSection.style.paddingBottom = `${requiredPadding}px`;
 
         if (footer) {
-          const footerHeight = parseInt(getComputedStyle(footer).height || "0");
+          const footerHeight = parseInt(getComputedStyle(footer).height || "0", 10);
           const shouldFloat = requiredPadding >= footerHeight;
 
           footer.style.position = shouldFloat ? "absolute" : "relative";
