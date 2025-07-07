@@ -17,11 +17,10 @@
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@tailwindcss/vite": "^4.1.10",
+    "@tailwindcss/vite": "^4.1.11",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "astro": "^5.10.1",
-    "babel-plugin-react-compiler": "^19.1.0-rc.2",
+    "astro": "^5.11.0",
     "class-variance-authority": "^0.7.1",
     "clean": "^4.0.2",
     "clsx": "^2.1.1",
@@ -35,24 +34,20 @@
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
-    "rolldown-vite": "^7.0.1",
+    "rolldown-vite": "^7.0.5",
     "sharp": "^0.34.2",
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.10",
+    "tailwindcss": "^4.1.11",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.8.3",
     "vaul": "^1.1.2",
     "vite": "npm:rolldown-vite@latest",
-    "wrangler": "^4.21.2"
+    "wrangler": "^4.23.0"
   },
   "devDependencies": {
-    "@types/babel__core": "^7.20.5",
-    "@types/babel__generator": "^7.27.0",
-    "@types/babel__template": "^7.4.4",
-    "@types/babel__traverse": "^7.20.7",
     "@types/lodash.debounce": "^4.0.9",
     "prettier-plugin-astro": "^0.14.1",
-    "rolldown": "^1.0.0-beta.19"
+    "rolldown": "^1.0.0-beta.24"
   }
 }

@@ -2,11 +2,6 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 
-// Define React Compiler configuration
-const ReactCompilerConfig = {
-  /* your compiler config here */
-};
-
 // https://astro.build/config
 export default defineConfig({
   markdown: {
@@ -17,9 +12,10 @@ export default defineConfig({
   },
   integrations: [
     react({
-      babel: {
-        plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
-      },
+      // Removed Babel configuration for React Compiler
+      // You can add SWC specific options here if @astrojs/react supports them
+      // directly for transformations, but typically Astro handles SWC internally
+      // for its own build process.
     }),
   ],
   vite: {
