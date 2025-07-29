@@ -1,5 +1,5 @@
 ---
-title: Cube - a simple orchestrator
+title: Cube
 author: Prashant Bhardwaj
 description: a minimalistic orchestrator designed to efficiently manage and deploy microservices
 pubDate: 2024-06-24
