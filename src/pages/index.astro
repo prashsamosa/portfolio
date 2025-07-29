@@ -44,11 +44,11 @@ const SECTION_CONFIG = {
 const PERSONAL_INFO = {
   name: "Prashant Bhardwaj",
   title: "dev",
-  description: "I read books and write code.",
+  description: "trying to do better",
 } as const;
 
 const sections = Object.entries(SECTION_CONFIG).sort(
-  ([, a], [, b]) => a.order - b.order
+  ([, a], [, b]) => a.order - b.order,
 );
 
 const navItems = sections.map(([key]) => key);
@@ -146,6 +146,7 @@ const navItems = sections.map(([key]) => key);
 </style>
 
 <script>
+  // Initial hash cleanup
   (function () {
     const referrer = document.referrer;
     const currentDomain = window.location.hostname;
@@ -155,63 +156,72 @@ const navItems = sections.map(([key]) => key);
       history.replaceState(
         null,
         "",
-        window.location.pathname + window.location.search
+        window.location.pathname + window.location.search,
       );
     }
   })();
 
+  // Portfolio Layout Manager
   class PortfolioLayoutManager {
-    resizeObserver;
-    intersectionObserver;
-    DESKTOP_BREAKPOINT = 1024;
-    DEBOUNCE_DELAY = 300;
-    hasUserInteracted = false;
+    private resizeObserver?: ResizeObserver;
+    private intersectionObserver?: IntersectionObserver;
+    private readonly DESKTOP_BREAKPOINT = 1024;
+    private readonly DEBOUNCE_DELAY = 300;
+    private hasUserInteracted = false;
 
-    init() {
+    init(): void {
       this.alignLastSection();
       this.observeVisibility();
       this.setupEventListeners();
       this.setupUserInteractionDetection();
     }
 
-    setupUserInteractionDetection() {
-      const events = ["scroll", "click", "keydown", "touchstart"];
-      const handler = () => {
+    private setupUserInteractionDetection(): void {
+      const eventTypes = ["scroll", "click", "keydown", "touchstart"];
+
+      const handler = (): void => {
         this.hasUserInteracted = true;
-        events.forEach((e) => document.removeEventListener(e, handler));
+        // Remove all event listeners
+        eventTypes.forEach((eventType) => {
+          document.removeEventListener(eventType, handler);
+        });
       };
-      events.forEach((e) =>
-        document.addEventListener(e, handler, { once: true })
-      );
+
+      // Add event listeners
+      eventTypes.forEach((eventType) => {
+        document.addEventListener(eventType, handler, { once: true });
+      });
+
+      // Fallback timeout
       setTimeout(() => {
         this.hasUserInteracted = true;
       }, 2000);
     }
 
-    setupEventListeners() {
-      if ("ResizeObserver" in window) {
+    private setupEventListeners(): void {
+      if (typeof ResizeObserver !== "undefined") {
         this.resizeObserver = new ResizeObserver(
-          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY)
+          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY),
         );
         this.resizeObserver.observe(document.body);
       } else {
         window.addEventListener(
           "resize",
-          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY)
+          this.debounce(() => this.handleResize(), this.DEBOUNCE_DELAY),
         );
       }
     }
 
-    handleResize() {
+    private handleResize(): void {
       this.alignLastSection();
     }
 
-    alignLastSection() {
+    private alignLastSection(): void {
       const lastSection = document.querySelector(
-        ".portfolio-section:last-of-type"
-      );
-      const header = document.querySelector("header");
-      const footer = document.querySelector("footer");
+        ".portfolio-section:last-of-type",
+      ) as HTMLElement;
+      const header = document.querySelector("header") as HTMLElement;
+      const footer = document.querySelector("footer") as HTMLElement;
 
       if (!lastSection || !header) return;
 
@@ -237,13 +247,16 @@ const navItems = sections.map(([key]) => key);
 
         const requiredPadding = Math.max(
           0,
-          window.innerHeight - headerPadding - lastSectionHeight
+          window.innerHeight - headerPadding - lastSectionHeight,
         );
 
         lastSection.style.paddingBottom = `${requiredPadding}px`;
 
         if (footer) {
-          const footerHeight = parseInt(getComputedStyle(footer).height || "0", 10);
+          const footerHeight = parseInt(
+            getComputedStyle(footer).height || "0",
+            10,
+          );
           const shouldFloat = requiredPadding >= footerHeight;
 
           footer.style.position = shouldFloat ? "absolute" : "relative";
@@ -254,14 +267,15 @@ const navItems = sections.map(([key]) => key);
       }
     }
 
-    observeVisibility() {
-      if (!("IntersectionObserver" in window)) return;
+    private observeVisibility(): void {
+      if (typeof IntersectionObserver === "undefined") return;
+
       const sections = document.querySelectorAll(".portfolio-section");
 
       this.intersectionObserver = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            const section = entry.target;
+            const section = entry.target as HTMLElement;
 
             if (entry.isIntersecting) {
               section.classList.add("section-focus");
@@ -281,26 +295,38 @@ const navItems = sections.map(([key]) => key);
         {
           threshold: 0.3,
           rootMargin: "-10% 0px -10% 0px",
-        }
+        },
       );
 
-      sections.forEach((section) => this.intersectionObserver.observe(section));
+      sections.forEach((section) => {
+        if (this.intersectionObserver) {
+          this.intersectionObserver.observe(section);
+        }
+      });
     }
 
-    debounce(func, wait) {
-      let timeout;
-      return (...args) => {
+    private debounce<T extends (...args: any[]) => void>(
+      func: T,
+      wait: number,
+    ): (...args: Parameters<T>) => void {
+      let timeout: ReturnType<typeof setTimeout>;
+      return (...args: Parameters<T>) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
       };
     }
 
-    destroy() {
-      this.resizeObserver?.disconnect();
-      this.intersectionObserver?.disconnect();
+    destroy(): void {
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+      }
+      if (this.intersectionObserver) {
+        this.intersectionObserver.disconnect();
+      }
     }
   }
 
+  // Initialize the layout manager
   const layoutManager = new PortfolioLayoutManager();
 
   if (document.readyState === "loading") {

@@ -18,9 +18,9 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.11",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "astro": "^5.11.0",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "astro": "^5.12.5",
     "class-variance-authority": "^0.7.1",
     "clean": "^4.0.2",
     "clsx": "^2.1.1",
@@ -28,14 +28,14 @@
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-to-markdown": "^2.1.2",
     "mdast-util-toc": "^7.1.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "reading-time": "^1.5.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
-    "rolldown-vite": "^7.0.5",
-    "sharp": "^0.34.2",
+    "rolldown-vite": "^7.0.11",
+    "sharp": "^0.34.3",
     "slugify": "^1.6.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
@@ -43,11 +43,11 @@
     "typescript": "^5.8.3",
     "vaul": "^1.1.2",
     "vite": "npm:rolldown-vite@latest",
-    "wrangler": "^4.23.0"
+    "wrangler": "^4.26.1"
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.9",
     "prettier-plugin-astro": "^0.14.1",
-    "rolldown": "^1.0.0-beta.24"
+    "rolldown": "^1.0.0-beta.29"
   }
 }
