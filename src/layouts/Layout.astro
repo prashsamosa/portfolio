@@ -3,51 +3,157 @@ import "@/styles/globals.css";
 import "@/styles/normalize.css";
 import Header from "@/components/MainHeader.astro";
 
-interface Props {
-  isHome: boolean;
+export interface Props {
+  isHome?: boolean;
   title?: string;
   subtitle?: string;
   details?: string;
   navItems?: string[];
   content?: string;
+  customTitle?: string;
+  customDescription?: string;
+  ogImage?: string;
+  noIndex?: boolean;
+  canonicalUrl?: string;
 }
 
-const { isHome, title, subtitle, details, navItems, content } = Astro.props;
+const {
+  isHome = false,
+  title,
+  subtitle,
+  details,
+  navItems,
+  content,
+  customTitle,
+  customDescription,
+  ogImage,
+  noIndex = false,
+  canonicalUrl,
+} = Astro.props;
 
 const metadata = {
-  title: "Prashant Bhardwaj",
+  siteName: "Prashant Bhardwaj",
+  title: customTitle || title || "Prashant Bhardwaj",
   author: "Prashant Bhardwaj",
   description:
+    customDescription ||
     "Prashant Bhardwaj is a software developer with a deep passion for creating innovative solutions. Educated in Computer Science at NIET.",
+  baseUrl:
+    Astro.site?.toString() ||
+    "https://portfolio.prashanttbhardwajj.workers.dev/",
+  ogImage: ogImage || "/og-image.jpg",
+  twitterHandle: "@prashtwts",
+};
+
+// Generate full page title
+const pageTitle = isHome
+  ? metadata.siteName
+  : title
+    ? `${title} | ${metadata.siteName}`
+    : metadata.siteName;
+
+// Generate canonical URL
+const canonical =
+  canonicalUrl || new URL(Astro.url.pathname, metadata.baseUrl).toString();
+
+// Schema.org structured data
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Prashant Bhardwaj",
+  jobTitle: "Software Developer",
+  description: metadata.description,
+  url: metadata.baseUrl,
+  sameAs: [
+    // Add your social media URLs here
+    "https://linkedin.com/in/prashant20",
+    "https://github.com/prashsamosa",
+    "https://twitter.com/prashtwt",
+  ],
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "NIET",
+  },
+  knowsAbout: ["Software Development", "Computer Science", "Web Development"],
 };
 ---
 
 <!doctype html>
 <html lang="en" dir="ltr">
   <head>
-    <!-- Meta -->
+    <!-- Essential Meta Tags -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content={metadata.author} />
     <meta name="description" content={metadata.description} />
-    <title>{metadata.title}</title>
+    <meta name="generator" content={Astro.generator} />
 
-    <!-- Favicon -->
+    <!-- SEO Meta Tags -->
+    <title>{pageTitle}</title>
+    <link rel="canonical" href={canonical} />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={metadata.siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metadata.description} />
+    <meta property="og:url" content={canonical} />
+    <meta
+      property="og:image"
+      content={new URL(metadata.ogImage, metadata.baseUrl).toString()}
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={metadata.twitterHandle} />
+    <meta name="twitter:creator" content={metadata.twitterHandle} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={metadata.description} />
+    <meta
+      name="twitter:image"
+      content={new URL(metadata.ogImage, metadata.baseUrl).toString()}
+    />
+
+    <!-- Favicon and App Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#1c1917" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
 
-    <!-- Fonts - Fixed loading performance -->
+    <!-- Performance & Security -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Fonts - Fixed loading performance -->
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Archivo+Black&family=Archivo+Narrow:wght@500&family=Poppins:wght@300;400;600;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Structured Data -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(structuredData)}
+    />
   </head>
   <body>
+    <!-- Gradient overlay -->
+    <div class="gradient-overlay"></div>
+
     <div class={`container${!isHome ? " container--alt" : ""}`}>
       <Header
         isHome={isHome}
@@ -70,9 +176,12 @@ const metadata = {
 
 <style is:global>
   :root {
-    --primary-text: #ffffff;
-    --primary-text-value: #ffffff;
-    --primary-bg: #191919;
+    --primary-text: #fafaf9;
+    --primary-text-value: #fafaf9;
+    --primary-bg: #1c1917;
+    --accent-color: #57534e;
+    --accent-hover: #78716c;
+    --selection-bg: #292524;
     --code-background: #f6f7f9;
     --code-text: #47546b;
     --code-border: #e2e8f0;
@@ -84,10 +193,38 @@ const metadata = {
     background-color: var(--primary-bg);
     scroll-behavior: smooth;
     color: var(--primary-text);
+    position: relative;
+  }
+
+  /* Subtle whitish gradient overlay */
+  .gradient-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(135, 125, 115, 0.2) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(250, 250, 249, 0.12) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(250, 250, 249, 0.08) 0%,
+        transparent 50%
+      );
   }
 
   ::selection {
-    background-color: #13262f;
+    background-color: var(--selection-bg);
     color: #ffffff;
   }
 
