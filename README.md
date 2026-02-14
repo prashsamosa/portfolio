@@ -4,7 +4,6 @@
     <img src="https://img.shields.io/badge/Astro-FF5D01.svg?style=flat-square&logo=Astro&logoColor=white" alt="Astro" />
     <img src="https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat-square&logo=TypeScript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat-square&logo=JavaScript&logoColor=black" alt="JavaScript" />
     <img src="https://img.shields.io/badge/JSON-000000.svg?style=flat-square&logo=JSON&logoColor=white" alt="JSON" />
   </p>
 </div>
@@ -24,8 +23,7 @@
 
 ## 📍 Overview
 
-This is my personal portfolio website, built using the **Astro framework** and hosted on **Cloudflare Workers**. I
-<img src="./src/assets/images/portfolio.png" alt="My Portfolio Page" />
+This is my personal portfolio website, built using the **Astro framework** and hosted on **Cloudflare Workers**.
 
 ---
 
@@ -35,7 +33,6 @@ This is my personal portfolio website, built using the **Astro framework** and h
 * **Accessibility**: Built with best practices to ensure it's usable by everyone.
 * **SEO Optimized**: Designed for better search engine visibility.
 * **Fully Responsive**: Adapts seamlessly to any screen size, from mobile to desktop.
-* **Modern Tech Stack**: Utilizes Astro, React, TypeScript, and JavaScript for a robust foundation.
 
 ---
 
@@ -66,7 +63,7 @@ To get a local copy up and running, follow these simple steps.
 3.  **Install dependencies:**
 
     ```sh
-    npm install
+    bun/npm install
     ```
 
 ### 🤖 Running Portfolio
@@ -74,4 +71,6 @@ To get a local copy up and running, follow these simple steps.
 Once dependencies are installed, you can start the development server:
 
 ```sh
-npm run dev
+bun/npm run dev
+```
+---
